@@ -1,0 +1,30 @@
+<div class="jumbtron py-3">
+    <h1 class="display-4 text-center">Quản lí nhân viên</h1>
+</div>
+
+
+<div class="row">
+    <div class="col-md-6">
+        <app-user-form></app-user-form>
+    </div>
+    <div class="col-md-6">
+        Danh sách nhân viên
+
+        <table class="table">
+            <thead>
+                <th>Mã NV</th>
+                <th>Tên NV</th>
+                <th>Phòng ban</th>
+                <th>Vị trí</th>
+            </thead>
+            <tbody>
+                <tr *ngFor="let user of data">
+                    <td>{{user.userCode}}</td>
+                    <td>{{user.userName}}</td>
+                    <td>{{user.userDepartment}}</td>
+                    <td>{{user.userPosition}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
