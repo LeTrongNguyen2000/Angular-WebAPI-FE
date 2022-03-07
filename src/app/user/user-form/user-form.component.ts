@@ -13,7 +13,7 @@ export class UserFormComponent implements OnInit {
 
   constructor(public service: UserService) { }
   user: User = new User();
-  
+
   ngOnInit(): void {
   }
 
@@ -26,6 +26,18 @@ export class UserFormComponent implements OnInit {
       userPosition: this.user.userPosition
     }
     this.service.addUser(user).subscribe()
+  }
+
+  UpdateUser(){
+    var user = {
+      userId: this.user.userId,
+      userCode: this.user.userCode,
+      userName: this.user.userName,
+      userDepartment: this.user.userDepartment,
+      userPosition: this.user.userPosition
+    }
+    var id:number = this.user.userId;
+    this.service.updateUser(id,user).subscribe()
   }
 
   
