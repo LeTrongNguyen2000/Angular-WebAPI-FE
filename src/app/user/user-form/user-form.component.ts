@@ -37,8 +37,10 @@ export class UserFormComponent implements OnInit {
       userPosition: this.user.userPosition
     }
     var id:number = this.user.userId;
-    this.service.updateUser(id,user).subscribe()
+    this.service.updateUser(id, user).subscribe()
   }
+
+
 
   
 }

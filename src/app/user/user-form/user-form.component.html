@@ -1,28 +1,28 @@
 <div class="container">
     <form>
-        <input type="hidden" name="UserId" [value]="user.userId" />
+        <input type="hidden" name="UserId" [value]="service.formData.userId" />
         <div class="form-group">
             <label>MÃ NV</label>
             <input class="form-control form-control-lg" type="text" name="userCode" placeholder="Mã NV"
-                [(ngModel)]="user.userCode" required>
+                [(ngModel)]="service.formData.userCode" required>
         </div>
 
         <div class="form-group">
             <label>TÊN NV</label>
             <input class="form-control form-control-lg" type="text" name="userName" placeholder="Tên NV"
-                [(ngModel)]="user.userName" required>
+                [(ngModel)]="service.formData.userName" required>
         </div>
 
         <div class="form-group">
             <label>PHÒNG BAN</label>
             <input class="form-control form-control-lg" type="text" name="userDepartment" placeholder="Phòng ban"
-                [(ngModel)]="user.userDepartment" required>
+                [(ngModel)]="service.formData.userDepartment" required>
         </div>
 
         <div class="form-group">
             <label>Vị trí</label>
             <input class="form-control form-control-lg" type="text" name="userPosition" placeholder="Vị trí"
-                [(ngModel)]="user.userPosition" required>
+                [(ngModel)]="service.formData.userPosition" required>
         </div>
         <br>
         <div class="form-group">
