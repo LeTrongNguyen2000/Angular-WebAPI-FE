@@ -11,21 +11,38 @@ export class UserService {
   constructor(private http: HttpClient) { }
 
   formData: User = new User();
-  readonly APIUrl = 'http://localhost:63019/api';
+  readonly APIUrl = 'http://localhost:63019/api/User';
+  list!: User[];
 
   getUserList(): Observable<User[]>{
-    return this.http.get<any>(this.APIUrl + '/User');
+    return this.http.get<any>(this.APIUrl);
+  }
+
+  getUser(id: number) {
+    return this.http.get<any>(`${this.APIUrl}/${id}`);
   }
 
   addUser(data: User){
-    return this.http.post(this.APIUrl + '/User', data);
+    return this.http.post(this.APIUrl, data);
   }
 
-  updateUser(id:number|string, data: User){
-    return this.http.put(this.APIUrl + '/User/${id}', data);
+  updateUser(){
+    return this.http.put(`${this.APIUrl}` + '/{id}', this.formData);
   }
 
-  deleteUser(id:number|string){
-    return this.http.delete(this.APIUrl + '/User/${id}');
+  deleteUser(id: number){
+
+    return this.http.delete(`${this.APIUrl}/${id}`);
   }
+
+  refreshList() {
+    this.http.get(this.APIUrl)
+      .toPromise()
+      .then((res) =>this.list = res as User[]);
+  }
+
+  filterUser(id: number) {
+    return this.http.get<any>(`${this.APIUrl}/${id}`);
+  }
+
 }
