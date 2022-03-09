@@ -1,7 +1,7 @@
 import { User } from './../../shared/user.model';
-import { Observable } from 'rxjs';
 import { UserService } from './../../shared/user.service';
 import { Component, OnInit } from '@angular/core';
+
 
 @Component({
   selector: 'app-user',
@@ -12,29 +12,50 @@ export class UserComponent implements OnInit {
   user: any;
   userListMap: Map<number, string> = new Map();
 
+  userId!: string;
+  userCode!: string;
+  userName!: string;
+  userDepartment!: string;
+  userPosition!: string;
+
   userList: any = [];
 
-  constructor(private service: UserService) {}
+  constructor(private service: UserService) { }
 
   ngOnInit(): void {
     this.service.getUserList().subscribe((res) => {
       this.user = res;
     });
-    //this.refreshInspectionTypesMap();
   }
 
-  // refreshInspectionTypesMap() {
-  //   this.service.getUserList().subscribe(data => {
-  //     this.userList = data;
-
-  //     for (let i = 0; i < data.length; i++) {
-  //       this.userListMap.set(this.userList[i].UserId, this.userList[i].UserName)
-  //     }
-
-  //   })
-  // }
-
   modelUpdate(selectedRecord: any) {
-      this.service.formData = selectedRecord;
+    this.service.formData = selectedRecord;
+  }
+
+  modelDelete(id: number) {
+    if (confirm('Ban co muon xoa record nay?')) {
+        this.service.deleteUser(id).subscribe((res) => {
+          this.service.refreshList();
+        },
+      )
+    }
+  }
+
+  populateForm(selectedRecord: User) {
+    this.service.formData = Object.assign({}, selectedRecord);
+  }
+
+  
+
+  resultSearch(data:any){
+      this.userId = data.userId;
+      this.userCode = data.userCode;
+      this.userName = data.userName;
+      this.userDepartment = data.userDepartment;
+      this.userPosition = data.userPosition;
+  }
+
+  ngOnChanges() {
+    
   }
 }
