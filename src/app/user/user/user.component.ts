@@ -14,7 +14,7 @@ export class UserComponent implements OnInit {
 
   //userList: any = [];
 
-  constructor(private userService: UserService) { }
+  constructor(public userService: UserService) { }
 
   ngOnInit(): void {
     this.userService.getUserList().subscribe((res) => {
@@ -38,12 +38,10 @@ export class UserComponent implements OnInit {
     this.userService.formData = Object.assign({}, selectedRecord);
   }
 
-  
-
-  search(data:any){
-      this.listUser = data;
-      console.log(data);
-  }
+  // search(data:any){
+  //     this.listUser = data;
+  //     console.log(data);
+  // }
 
   ngOnChanges() {
     

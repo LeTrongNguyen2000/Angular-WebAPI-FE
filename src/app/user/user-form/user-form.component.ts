@@ -50,6 +50,7 @@ export class UserFormComponent implements OnInit {
     this.userService.filterUser(this.userService.formData.userName).subscribe(res=>{
       if(res)
         this.valueChange.emit(res);
+        console.log(res);
     });
   }
 }

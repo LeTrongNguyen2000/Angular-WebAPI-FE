@@ -1,13 +1,32 @@
-<app-user-form-field (valueChange)="search($event)"></app-user-form-field>
+<app-user-form-field></app-user-form-field>
 <br>
 <hr>
 
 <div class="row boxGrid">
     <div class="col-md-2">
-        <div class="example-config">Selected Value: {{ selectedValue }}</div>
-        <kendo-dropdownlist [data]="listItems" [(ngModel)]="selectedValue" (valueChange)="selectionChange($event)"></kendo-dropdownlist>
+        <p>Ban lãnh đao</p>
+        <kendo-dropdownlist [data]="listManager" [(ngModel)]="selectedValueForManager" (valueChange)="selectionChange($event)"></kendo-dropdownlist>
+        <br>
+        <p>Nhân viên</p>
+        <kendo-dropdownlist [data]="listStaff" [(ngModel)]="selectedValueForStaff" (valueChange)="selectionChange($event)"></kendo-dropdownlist>
     </div>
     <div class="col-md-10">
+        <form>
+            <legend class="k-form-legend text-center" style="font-size: 2rem;">Danh sách NV</legend>
+            <div class="row" style="margin-left: 25rem;">
+                <div class="col-md-6" style="width: 300px;">
+                    <input class="form-control form-control-lg" type="text" name="userName" 
+                    [(ngModel)]="userService.formData.userName">
+                </div>
+                <br>
+                <div class="col-md-6">
+                    <button (click)="onSearch()" class="btn btn-info btn-lg btn-clock" type="submit">
+                        Tìm kiếm
+                    </button>
+                </div>
+            </div>
+        </form>
+        <br>
         <kendo-grid [data]="listUser" (edit)="editHandler($event)" (remove)="removeHandler($event)">
             <kendo-grid-column field="userCode" title="Mã NV"> </kendo-grid-column>
             <kendo-grid-column field="userName" title="Tên NV"> </kendo-grid-column>

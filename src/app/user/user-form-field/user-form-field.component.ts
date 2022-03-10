@@ -56,14 +56,14 @@ export class UserFormFieldComponent implements OnInit {
     this.registerForm.reset();
   }
 
-  onSearch() {
-    this.search();
-  }
+  // onSearch() {
+  //   this.search();
+  // }
 
-  search() {
-    this.userService.filterUser(this.userService.formData.userName).subscribe(res=>{
-      if(res)
-        this.valueChange.emit(res);  
-    });
-  }
+  // search() {
+  //   this.userService.filterUser(this.userService.formData.userName).subscribe(res=>{
+  //     if(res)
+  //       this.valueChange.emit(res);  
+  //   });
+  // }
 }
