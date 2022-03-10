@@ -1,0 +1,10 @@
+<app-user-form-field (valueChange)="search($event)"></app-user-form-field>
+<br><br><hr>
+
+<kendo-grid [data]="listUser">
+    <kendo-grid-column field="userCode" title="Mã NV"> </kendo-grid-column>
+    <kendo-grid-column field="userName" title="Tên NV"> </kendo-grid-column>
+    <kendo-grid-column field="department" title="Phòng ban"> </kendo-grid-column>
+    <kendo-grid-column field="position" title="Vị trí"> </kendo-grid-column>
+</kendo-grid>
+

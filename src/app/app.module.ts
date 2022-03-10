@@ -14,6 +14,8 @@ import { LabelModule } from '@progress/kendo-angular-label';
 import { InputsModule } from '@progress/kendo-angular-inputs';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { GridModule } from '@progress/kendo-angular-grid';
+import { UserGridDataComponent } from './user/user-grid-data/user-grid-data.component';
+import { UserFormFieldComponent } from './user/user-form-field/user-form-field.component';
 
 
 
@@ -21,7 +23,9 @@ import { GridModule } from '@progress/kendo-angular-grid';
   declarations: [
     AppComponent,
     UserFormComponent,
-    UserComponent
+    UserComponent,
+    UserGridDataComponent,
+    UserFormFieldComponent
   ],
   imports: [
     BrowserModule,

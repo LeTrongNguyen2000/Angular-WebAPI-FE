@@ -9,50 +9,40 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./user.component.scss'],
 })
 export class UserComponent implements OnInit {
-  user: any;
+  listUser: any;
   userListMap: Map<number, string> = new Map();
 
-  userId!: string;
-  userCode!: string;
-  userName!: string;
-  userDepartment!: string;
-  userPosition!: string;
+  //userList: any = [];
 
-  userList: any = [];
-
-  constructor(private service: UserService) { }
+  constructor(private userService: UserService) { }
 
   ngOnInit(): void {
-    this.service.getUserList().subscribe((res) => {
-      this.user = res;
+    this.userService.getUserList().subscribe((res) => {
+      this.listUser = res;
     });
   }
 
-  modelUpdate(selectedRecord: any) {
-    this.service.formData = selectedRecord;
+  updateModel(selectedRecord: any) {
+    this.userService.formData = selectedRecord;
   }
 
-  modelDelete(id: number) {
+  deleteModel(id: number) {
     if (confirm('Ban co muon xoa record nay?')) {
-        this.service.deleteUser(id).subscribe((res) => {
-          this.service.refreshList();
+        this.userService.deleteUser(id).subscribe((res) => {
         },
       )
     }
   }
 
   populateForm(selectedRecord: User) {
-    this.service.formData = Object.assign({}, selectedRecord);
+    this.userService.formData = Object.assign({}, selectedRecord);
   }
 
   
 
-  resultSearch(data:any){
-      this.userId = data.userId;
-      this.userCode = data.userCode;
-      this.userName = data.userName;
-      this.userDepartment = data.userDepartment;
-      this.userPosition = data.userPosition;
+  search(data:any){
+      this.listUser = data;
+      console.log(data);
   }
 
   ngOnChanges() {

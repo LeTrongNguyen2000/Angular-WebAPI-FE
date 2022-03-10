@@ -35,14 +35,13 @@ export class UserService {
     return this.http.delete(`${this.APIUrl}/${id}`);
   }
 
-  refreshList() {
-    this.http.get(this.APIUrl)
-      .toPromise()
-      .then((res) =>this.list = res as User[]);
-  }
 
-  filterUser(id: number) {
-    return this.http.get<any>(`${this.APIUrl}/${id}`);
+  filterUser(name: string) {
+    return this.http.get<any>(`${this.APIUrl}` + "/UserName?UserName=" +`${name}`);
+  }
+  generateURL(){
+    return `${this.APIUrl}/`;
+
   }
 
 }

@@ -1,0 +1,54 @@
+<div class="example-wrap">
+    <form class="k-form" [formGroup]="registerForm" style="font-size: 1.3rem;">
+        <fieldset class="k-form-fieldset">
+            <legend class="k-form-legend text-center" style="font-size: 2rem;">Form thông tin</legend>
+            <kendo-formfield>
+                <kendo-label [for]="userCode" text="Mã NV"></kendo-label>
+                <input formControlName="userCode" kendoTextBox #userCode required [(ngModel)]="userService.formData.userCode" />
+
+                <kendo-formerror>Mã NV không được để trống</kendo-formerror>
+            </kendo-formfield>
+
+            <kendo-formfield>
+                <kendo-label [for]="userName" text="Tên NV"></kendo-label>
+                <input formControlName="userName" kendoTextBox #userName required [(ngModel)]="userService.formData.userName" />
+                
+                <kendo-formerror>Tên NV không được để trống</kendo-formerror>
+            </kendo-formfield>
+
+            <kendo-formfield>
+                <kendo-label [for]="department" text="Phòng ban"></kendo-label>
+                <input formControlName="department" kendoTextBox #department required [(ngModel)]="userService.formData.department" />
+
+                <kendo-formerror>Phòng ban không được để trống</kendo-formerror>
+            </kendo-formfield>
+
+            <kendo-formfield>
+                <kendo-label [for]="position" text="Vị trí"></kendo-label>
+                <input formControlName="position" kendoTextBox #position required [(ngModel)]="userService.formData.position"/>
+
+                <kendo-formerror>Vị trí không được để trống</kendo-formerror>
+            </kendo-formfield>
+
+            <div class="k-form-buttons">
+                <button kendoButton themeColor="primary" (click)="submitForm()">
+                    Submit
+                </button>
+                <button kendoButton (click)="clearForm()">Clear</button>
+            </div>
+        </fieldset>
+    </form>
+    <br><br>
+    <form>
+        <div class="col-md-6">
+            <input class="form-control form-control-lg" type="text" name="userName" 
+            [(ngModel)]="userService.formData.userName">
+        </div>
+        <br>
+        <div class="form-group col-md-6">
+            <button (click)="onSearch()" class="btn btn-info btn-lg btn-clock" type="submit">
+                Search
+            </button>
+        </div>
+    </form>
+</div>

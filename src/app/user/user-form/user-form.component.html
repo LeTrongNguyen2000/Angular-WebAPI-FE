@@ -1,28 +1,28 @@
 <div class="container">
     <form>
-        <input type="hidden" name="id" [value]="service.formData.id" />
+        <input type="hidden" name="id" [value]="userService.formData.id" />
         <div class="form-group">
             <label>MÃ NV</label>
             <input class="form-control form-control-lg" type="text" name="userCode" placeholder="Mã NV"
-                [(ngModel)]="service.formData.userCode" required>
+                [(ngModel)]="userService.formData.userCode" required>
         </div>
 
         <div class="form-group">
             <label>TÊN NV</label>
             <input class="form-control form-control-lg" type="text" name="userName" placeholder="Tên NV"
-                [(ngModel)]="service.formData.userName" required>
+                [(ngModel)]="userService.formData.userName" required>
         </div>
 
         <div class="form-group">
             <label>PHÒNG BAN</label>
-            <input class="form-control form-control-lg" type="text" name="userDepartment" placeholder="Phòng ban"
-                [(ngModel)]="service.formData.userDepartment" required>
+            <input class="form-control form-control-lg" type="text" name="department" placeholder="Phòng ban"
+                [(ngModel)]="userService.formData.department" required>
         </div>
 
         <div class="form-group">
             <label>Vị trí</label>
-            <input class="form-control form-control-lg" type="text" name="userPosition" placeholder="Vị trí"
-                [(ngModel)]="service.formData.userPosition" required>
+            <input class="form-control form-control-lg" type="text" name="position" placeholder="Vị trí"
+                [(ngModel)]="userService.formData.position" required>
         </div>
         <br>
         <div class="form-group">
@@ -34,7 +34,8 @@
     <hr>
     <form>
         <div class="col-md-6">
-            <input type="text" name="id" [(ngModel)]="service.formData.id">
+            <input class="form-control form-control-lg" type="text" name="userName" 
+            [(ngModel)]="userService.formData.userName">
         </div>
         <br>
         <div class="form-group col-md-6">
