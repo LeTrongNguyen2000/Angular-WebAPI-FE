@@ -12,6 +12,7 @@ import { User } from 'src/app/shared/user.model';
 export class UserFormFieldComponent implements OnInit {
 
   @Output() valueChange  = new EventEmitter();
+  listUser : any;
 
   constructor(public userService: UserService) { }
 
@@ -31,6 +32,8 @@ export class UserFormFieldComponent implements OnInit {
     {
       this.addUser();
     }
+    else
+      this.updateUser();
     
       
   }
@@ -60,7 +63,7 @@ export class UserFormFieldComponent implements OnInit {
   search() {
     this.userService.filterUser(this.userService.formData.userName).subscribe(res=>{
       if(res)
-        this.valueChange.emit(res);
+        this.valueChange.emit(res);  
     });
   }
 }
