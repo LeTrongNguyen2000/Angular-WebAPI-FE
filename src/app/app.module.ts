@@ -7,7 +7,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { UserFormComponent } from './user/user-form/user-form.component';
 import { UserComponent } from './user/user/user.component';
-import { HttpClientModule, HttpClientJsonpModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule, HttpClientJsonpModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
 import { LabelModule } from '@progress/kendo-angular-label';
@@ -16,6 +16,8 @@ import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { GridModule } from '@progress/kendo-angular-grid';
 import { UserGridDataComponent } from './user/user-grid-data/user-grid-data.component';
 import { UserFormFieldComponent } from './user/user-form-field/user-form-field.component';
+import { UserReactiveFormsComponent } from './user/user-reactive-forms/user-reactive-forms.component';
+import { EditService } from './shared/edit.service';
 
 
 
@@ -25,7 +27,8 @@ import { UserFormFieldComponent } from './user/user-form-field/user-form-field.c
     UserFormComponent,
     UserComponent,
     UserGridDataComponent,
-    UserFormFieldComponent
+    UserFormFieldComponent,
+    UserReactiveFormsComponent
   ],
   imports: [
     BrowserModule,
@@ -39,9 +42,16 @@ import { UserFormFieldComponent } from './user/user-form-field/user-form-field.c
     LabelModule,
     InputsModule,
     ButtonsModule,
-    GridModule
+    GridModule,
   ],
-  providers: [UserService],
+  //providers: [UserService],
+  providers: [
+    {
+      deps: [HttpClient],
+      provide: EditService,
+      useFactory: (jsonp: HttpClient) => () => new EditService(jsonp),
+    },
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

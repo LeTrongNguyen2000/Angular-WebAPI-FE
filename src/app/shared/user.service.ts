@@ -39,9 +39,12 @@ export class UserService {
   filterUser(name: string) {
     return this.http.get<any>(`${this.APIUrl}` + "/UserName?UserName=" +`${name}`);
   }
+
+  filterByDepartment(department: string) {
+    return this.http.get<any>(`${this.APIUrl}` + "/UserName?Department=" +`${department}`);
+  }
   generateURL(){
     return `${this.APIUrl}/`;
-
   }
 
 }

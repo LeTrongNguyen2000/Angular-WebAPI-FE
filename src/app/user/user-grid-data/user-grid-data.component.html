@@ -1,10 +1,25 @@
 <app-user-form-field (valueChange)="search($event)"></app-user-form-field>
-<br><br><hr>
+<br>
+<hr>
 
-<kendo-grid [data]="listUser">
-    <kendo-grid-column field="userCode" title="Mã NV"> </kendo-grid-column>
-    <kendo-grid-column field="userName" title="Tên NV"> </kendo-grid-column>
-    <kendo-grid-column field="department" title="Phòng ban"> </kendo-grid-column>
-    <kendo-grid-column field="position" title="Vị trí"> </kendo-grid-column>
-</kendo-grid>
-
+<div class="row boxGrid">
+    <div class="col-md-2">
+        <div class="example-config">Selected Value: {{ selectedValue }}</div>
+        <kendo-dropdownlist [data]="listItems" [(ngModel)]="selectedValue" (valueChange)="selectionChange($event)"></kendo-dropdownlist>
+    </div>
+    <div class="col-md-10">
+        <kendo-grid [data]="listUser" (edit)="editHandler($event)" (remove)="removeHandler($event)">
+            <kendo-grid-column field="userCode" title="Mã NV"> </kendo-grid-column>
+            <kendo-grid-column field="userName" title="Tên NV"> </kendo-grid-column>
+            <kendo-grid-column field="department" title="Phòng ban"> </kendo-grid-column>
+            <kendo-grid-column field="position" title="Vị trí"> </kendo-grid-column>
+            <kendo-grid-command-column title="Chức năng">
+                <ng-template kendoGridCellTemplate let-isNew="isNew">
+                    <button kendoGridEditCommand [primary]="true">Cập nhật</button>
+                    <button kendoGridRemoveCommand>Xóa</button>
+                </ng-template>
+            </kendo-grid-command-column>
+        </kendo-grid>
+    </div>
+</div>
+<br><br><br><br><br>

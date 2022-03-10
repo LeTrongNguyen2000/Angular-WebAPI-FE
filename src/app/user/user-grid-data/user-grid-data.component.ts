@@ -36,10 +36,48 @@ export class UserGridDataComponent implements OnInit {
     this.userService.getUserList().subscribe((res) => {
       this.listUser = res;
     });
+    console.log("Init");
+  }
+
+  refresh(): void {
+    this.userService.getUserList().subscribe((res) => {
+      this.listUser = res;
+    console.log("getUserList");
+
+    });
+    console.log("Refresh");
   }
 
   search(data: any) {
     this.listUser = data;
     console.log(data);  
+  }
+
+  editHandler(selectedRecord : any) {
+    this.userService.formData = selectedRecord.dataItem;
+    console.log(selectedRecord.dataItem);
+  }
+
+  removeHandler(selectedRecord: any) {
+    if (confirm('Ban co muon xoa record nay?')) {
+      this.userService.deleteUser(selectedRecord.dataItem.id).subscribe((res) => {
+        this.refresh();
+      },
+    )
+  }
+  }
+
+
+  //Dropdown List
+  public listItems: Array<string> = ["Small", "Medium", "Large"];
+  public selectedValue = "Medium";
+
+
+  // searchByDepartment() {
+  //   var result = this.userService.filterByDepartment(this.userService.formData.department).subscribe();
+  //   console.log(result);
+  // }
+  selectionChange(event:any){
+    console.log('event',event);
   }
 }
