@@ -19,15 +19,17 @@ export class UserFormFieldComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  public registerForm: FormGroup = new FormGroup({
-    userCode: new FormControl(),
-    userName: new FormControl(),
+  public formValue: FormGroup = new FormGroup({
+    code: new FormControl(),
+    firstName: new FormControl(),
+    lastName: new FormControl(),
+    title: new FormControl(),
     department: new FormControl(),
     position: new FormControl(),
   });
 
   public submitForm(): void {
-    this.registerForm.markAllAsTouched();
+    this.formValue.markAllAsTouched();
     if(this.userService.formData.id == 0)
     {
       this.addUser();
@@ -40,7 +42,7 @@ export class UserFormFieldComponent implements OnInit {
 
   addUser() {
     let userService = this.userService.formData;
-    var user = new User(userService.userCode, userService.userName, userService.department, userService.id, userService.position);
+    var user = new User(userService.code,userService.firstName,userService.lastName,userService.id,userService.position,userService.title,userService.departmentId,userService.name);
     this.userService.addUser(user).subscribe();
   }
 
@@ -53,7 +55,7 @@ export class UserFormFieldComponent implements OnInit {
   }
 
   public clearForm(): void {
-    this.registerForm.reset();
+    this.formValue.reset();
   }
 
   // onSearch() {

@@ -69,7 +69,7 @@ export class UserGridDataComponent implements OnInit {
 
   //Dropdown List
   public listStaff: Array<string> = ["IT", "Nhân sự", "Sale"];
-  public listManager: Array<string> = ["CEO", "Chủ tịch", "Giám đóc"];
+  public listManager: Array<string> = ["CEO", "Chủ tịch", "Giám đốc"];
   public selectedValueForManager = "";
   public selectedValueForStaff = "";
 
@@ -90,7 +90,7 @@ export class UserGridDataComponent implements OnInit {
   }
 
   search() {
-    this.userService.filterUser(this.userService.formData.userName).subscribe(res=>{
+    this.userService.filterUser(this.userService.formData.lastName).subscribe(res=>{
       if(res)
       this.listUser = res;  
     });

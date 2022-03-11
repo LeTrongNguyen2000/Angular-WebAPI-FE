@@ -30,7 +30,7 @@ export class UserFormComponent implements OnInit {
 
   addUser() {
     let userService = this.userService.formData;
-    var user = new User(userService.userCode,userService.userName,userService.department,userService.id,userService.position);
+    var user = new User(userService.code,userService.firstName,userService.lastName,userService.id,userService.position,userService.title,userService.departmentId,userService.name);
     this.userService.addUser(user).subscribe();
   }
 
@@ -47,7 +47,7 @@ export class UserFormComponent implements OnInit {
   }
 
   search() {
-    this.userService.filterUser(this.userService.formData.userName).subscribe(res=>{
+    this.userService.filterUser(this.userService.formData.lastName).subscribe(res=>{
       if(res)
         this.valueChange.emit(res);
         console.log(res);

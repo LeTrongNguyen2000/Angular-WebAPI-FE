@@ -1,33 +1,45 @@
 <div class="example-wrap">
-    <form class="k-form" [formGroup]="registerForm" style="font-size: 1.3rem;">
+    <form class="k-form" [formGroup]="formValue" style="font-size: 1.3rem;">
         <fieldset class="k-form-fieldset">
             <legend class="k-form-legend text-center" style="font-size: 2rem;">Form thông tin</legend>
             <kendo-formfield>
-                <kendo-label [for]="userCode" text="Mã NV"></kendo-label>
-                <input formControlName="userCode" kendoTextBox #userCode required [(ngModel)]="userService.formData.userCode" />
+                <kendo-label [for]="code" text="Mã NV"></kendo-label>
+                <input formControlName="code" kendoTextBox #code required [(ngModel)]="userService.formData.code" />
 
-                <kendo-formerror>Mã NV không được để trống</kendo-formerror>
+                <kendo-formerror>Trống</kendo-formerror>
             </kendo-formfield>
 
             <kendo-formfield>
-                <kendo-label [for]="userName" text="Tên NV"></kendo-label>
-                <input formControlName="userName" kendoTextBox #userName required [(ngModel)]="userService.formData.userName" />
+                <kendo-label [for]="firstName" text="Họ"></kendo-label>
+                <input formControlName="firstName" kendoTextBox #firstName required [(ngModel)]="userService.formData.firstName" />
                 
-                <kendo-formerror>Tên NV không được để trống</kendo-formerror>
+                <kendo-formerror>Trống</kendo-formerror>
             </kendo-formfield>
 
             <kendo-formfield>
-                <kendo-label [for]="department" text="Phòng ban"></kendo-label>
-                <input formControlName="department" kendoTextBox #department required [(ngModel)]="userService.formData.department" />
+                <kendo-label [for]="lastName" text="Tên"></kendo-label>
+                <input formControlName="lastName" kendoTextBox #lastName required [(ngModel)]="userService.formData.lastName" />
 
-                <kendo-formerror>Phòng ban không được để trống</kendo-formerror>
+                <kendo-formerror>Trống</kendo-formerror>
             </kendo-formfield>
 
             <kendo-formfield>
-                <kendo-label [for]="position" text="Vị trí"></kendo-label>
+                <kendo-label [for]="position" text="Chức vụ"></kendo-label>
                 <input formControlName="position" kendoTextBox #position required [(ngModel)]="userService.formData.position"/>
 
-                <kendo-formerror>Vị trí không được để trống</kendo-formerror>
+                <kendo-formerror>Trống</kendo-formerror>
+            </kendo-formfield>
+            <kendo-formfield>
+                <kendo-label [for]="title" text="Chức danh"></kendo-label>
+                <input formControlName="title" kendoTextBox #title required [(ngModel)]="userService.formData.title"/>
+
+                <kendo-formerror>Trống</kendo-formerror>
+            </kendo-formfield>
+            <kendo-formfield>
+                <kendo-label [for]="department" text="Phòng ban"></kendo-label>
+                <input formControlName="department" kendoTextBox #department required [(ngModel)]="userService.formData.name"/>
+
+                <kendo-formerror>Trống</kendo-formerror>
             </kendo-formfield>
 
             <div class="k-form-buttons">

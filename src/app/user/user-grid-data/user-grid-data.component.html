@@ -16,7 +16,7 @@
             <div class="row" style="margin-left: 25rem;">
                 <div class="col-md-6" style="width: 300px;">
                     <input class="form-control form-control-lg" type="text" name="userName" 
-                    [(ngModel)]="userService.formData.userName">
+                    [(ngModel)]="userService.formData.lastName">
                 </div>
                 <br>
                 <div class="col-md-6">
@@ -28,10 +28,12 @@
         </form>
         <br>
         <kendo-grid [data]="listUser" (edit)="editHandler($event)" (remove)="removeHandler($event)">
-            <kendo-grid-column field="userCode" title="Mã NV"> </kendo-grid-column>
-            <kendo-grid-column field="userName" title="Tên NV"> </kendo-grid-column>
-            <kendo-grid-column field="department" title="Phòng ban"> </kendo-grid-column>
-            <kendo-grid-column field="position" title="Vị trí"> </kendo-grid-column>
+            <kendo-grid-column field="code" title="Mã NV"> </kendo-grid-column>
+            <kendo-grid-column field="firstName" title="Họ"> </kendo-grid-column>
+            <kendo-grid-column field="lastName" title="Tên"> </kendo-grid-column>
+            <kendo-grid-column field="position" title="Chức vụ"> </kendo-grid-column>
+            <kendo-grid-column field="title" title="Chức danh"> </kendo-grid-column>
+            <kendo-grid-column field="name" title="Phòng ban"> </kendo-grid-column>
             <kendo-grid-command-column title="Chức năng">
                 <ng-template kendoGridCellTemplate let-isNew="isNew">
                     <button kendoGridEditCommand [primary]="true">Cập nhật</button>
