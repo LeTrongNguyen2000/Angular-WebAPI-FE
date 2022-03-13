@@ -37,7 +37,7 @@
             </kendo-formfield>
             <kendo-formfield>
                 <kendo-label [for]="department" text="Phòng ban"></kendo-label>
-                <input formControlName="department" kendoTextBox #department required [(ngModel)]="userService.formData.name"/>
+                <input formControlName="department" kendoTextBox #department required [(ngModel)]="userService.formData.departmentId"/>
 
                 <kendo-formerror>Trống</kendo-formerror>
             </kendo-formfield>

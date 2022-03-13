@@ -22,4 +22,8 @@ export class DepartmentService {
     return this.http.get<any>(`${this.APIUrl}/${id}`);
   }
 
+  getDepartmentName(departmentName: string) {
+    return this.http.get<any>(`${this.APIUrl}/DepartmentName?DepartmentName=${departmentName}`);
+  }
+
 }

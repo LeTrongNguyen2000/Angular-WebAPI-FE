@@ -42,12 +42,14 @@ export class UserFormFieldComponent implements OnInit {
 
   addUser() {
     let userService = this.userService.formData;
-    var user = new User(userService.code,userService.firstName,userService.lastName,userService.id,userService.position,userService.title,userService.departmentId,userService.name);
+    var user = new User(userService.code,userService.firstName,userService.lastName,userService.id,userService.position,userService.title);
     this.userService.addUser(user).subscribe();
   }
 
   updateUser() {
-    this.userService.updateUser().subscribe();
+    let userService = this.userService.formData;
+    var user = new User(userService.code,userService.firstName,userService.lastName,userService.id,userService.position,userService.title);
+    this.userService.updateUser(user).subscribe();
   }
 
   deleteUser(id: number) {

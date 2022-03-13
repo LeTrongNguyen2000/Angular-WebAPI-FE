@@ -74,14 +74,14 @@ export class UserGridDataComponent implements OnInit {
   public selectedValueForStaff = "";
 
 
-  searchByDepartment(departmentName: string) {
-    this.userService.filterByDepartment(departmentName).subscribe(res => {
+  searchByDepartment(departmentId: number) {
+    this.userService.filterByDepartment(departmentId).subscribe(res => {
       if(res)
         this.listUser = res;
         console.log(res);
     });
   }
-  selectionChange(event:string){
+  selectionChange(event:number){
     this.searchByDepartment(event);
   }
 

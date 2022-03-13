@@ -20,7 +20,8 @@ import { InputsModule } from '@progress/kendo-angular-inputs';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { UserUIComponent } from './user-ui/user-ui.component';
 import { TreeViewModule } from '@progress/kendo-angular-treeview';
-import { ModelDialogComponent } from './user-ui/model-dialog/model-dialog.component';
+import { NotificationModule } from '@progress/kendo-angular-notification';
+
 
 @NgModule({
   declarations: [
@@ -31,7 +32,6 @@ import { ModelDialogComponent } from './user-ui/model-dialog/model-dialog.compon
     UserFormFieldComponent,
     UserReactiveFormsComponent,
     UserUIComponent,
-    ModelDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -48,6 +48,7 @@ import { ModelDialogComponent } from './user-ui/model-dialog/model-dialog.compon
     ButtonsModule,
     DropDownsModule,
     TreeViewModule,
+    NotificationModule,
   ],
   //providers: [UserService],
   providers: [

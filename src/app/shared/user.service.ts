@@ -26,8 +26,8 @@ export class UserService {
     return this.http.post(this.APIUrl, data);
   }
 
-  updateUser(){
-    return this.http.put(`${this.APIUrl}` + '/{id}', this.formData);
+  updateUser(data: User){
+    return this.http.put(`${this.APIUrl}/{id}`, data);
   }
 
   deleteUser(id: number){
@@ -40,8 +40,8 @@ export class UserService {
     return this.http.get<any>(`${this.APIUrl}` + "/UserName?UserName=" +`${name}`);
   }
 
-  filterByDepartment(departmentName: string) {
-    return this.http.get<any>(`${this.APIUrl}` + "/Department?DepartmentName=" +`${departmentName}`);
+  filterByDepartment(departmentId: number) {
+    return this.http.get<any>(`${this.APIUrl}` + "/departmentId?departmentId=" +`${departmentId}`);
   }
   generateURL(){
     return `${this.APIUrl}/`;

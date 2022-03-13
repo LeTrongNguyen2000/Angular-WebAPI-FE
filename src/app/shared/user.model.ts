@@ -5,11 +5,10 @@ export class User{
     lastName: string;
     position: string;
     title: string;
-    name: string;
     departmentId: number;
 
     constructor(code:string = "",firstName:string ="",lastName:string ="",id:number = 0,position:string ="",
-     title:string ="", departmentId = 0, name: string = ""){
+     title:string ="", departmentId: number = 0){
         this.code = code;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -17,6 +16,5 @@ export class User{
         this.id = id;
         this.position = position;
         this.departmentId = departmentId;
-        this.name = name;
     }
 }
