@@ -52,7 +52,7 @@ export class UserFormFieldComponent implements OnInit {
     this.userService.updateUser(user).subscribe();
   }
 
-  deleteUser(id: number) {
+  deleteUser(id: any) {
     this.userService.deleteUser(id).subscribe();
   }
 

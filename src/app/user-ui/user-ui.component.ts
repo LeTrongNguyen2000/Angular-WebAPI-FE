@@ -1,12 +1,15 @@
+import { State, process } from '@progress/kendo-data-query';
 import { User } from 'src/app/shared/user.model';
-import { FormControl } from '@angular/forms';
+import { FormControl, NgForm } from '@angular/forms';
 import { FormGroup } from '@angular/forms';
 import { DepartmentService } from './../shared/department.service';
 import { UserService } from './../shared/user.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, DoCheck, OnInit } from '@angular/core';
 import { TreeItem } from "@progress/kendo-angular-treeview";
-import { of } from 'rxjs';
+import { of, BehaviorSubject, switchMap, Subject, Subscription, Observable } from 'rxjs';
 import { NotificationService } from "@progress/kendo-angular-notification";
+import { HttpHeaders } from '@angular/common/http';
+import { DataStateChangeEvent, GridDataResult } from '@progress/kendo-angular-grid';
 
 interface Item {
   text: string;
@@ -19,22 +22,54 @@ interface Item {
 })
 export class UserUIComponent implements OnInit {
 
-  constructor(public userService: UserService, public departmentService: DepartmentService, private notificationService: NotificationService) { }
-  listUser: any;
+  constructor(public userService: UserService, public departmentService: DepartmentService, private notificationService: NotificationService,
+  ) { }
+  listUser: Array<any> = [];
   //listDepartment: any;
-  listItems: any;
+  listItems:  any ;
+  subScription!: Subscription;
 
+  public state: State = {
+    skip: 0,
+    take: 5,
+
+    // Initial filter descriptor
+    filter: {
+      logic: "and",
+      filters: [{ field: "firstName", operator: "contains", value: "" }],
+    },
+  };
+
+
+  public gridData: GridDataResult = process(this.listUser, this.state);
 
   ngOnInit(): void {
+    this.loadData();
+  }
+
+  loadData() {
     this.userService.getUserList().subscribe((res) => {
       this.listUser = res;
+      this.gridData = process(this.listUser, this.state);
     });
     this.departmentService.getDepartmentList().subscribe((res) => {
-      //console.log(res);
       this.listItems = res;
-      console.log("departmentList",res);
+      console.log("departmentList", res);
     });
   }
+
+  loadUserList() {
+    this.userService.getUserList().subscribe((res) => {
+      this.listUser = res;
+      this.gridData = process(this.listUser, this.state);
+    });
+  }
+
+  public dataStateChange(state: DataStateChangeEvent): void {
+    this.state = state;
+    this.gridData = process(this.listUser, this.state);
+  }
+
   public formValue: FormGroup = new FormGroup({
     code: new FormControl(),
     firstName: new FormControl(),
@@ -48,34 +83,50 @@ export class UserUIComponent implements OnInit {
 
   public onSelectionChange(event: TreeItem): void {
     this.userService.filterByDepartment(event.dataItem.value).subscribe(res => {
-      console.log(res);
       this.listUser = res;
+      this.gridData = process(this.listUser, this.state);
     });
   }
 
 
   public data: any[] = [
     {
-      text: "Tổng công ty nhân sự Việt Nam",
-      items: [
-        {text: "Ban giám đốc", value: 1 },
-        {text: "Ban tổng giám đốc", value: 2 },
+      parentDepartmentName: "Tổng công ty nhân sự Việt Nam",
+      childDepartment: [
+        { childDepartmentName: "Ban giám đốc", value: 3 },
+        { childDepartmentName: "Ban tổng giám đốc", value: 4 },
       ],
     },
     {
-      text: "Khối nhân sự",
-      items: [
-        { text: "Bộ phận tính lương", value: 3},
-        { text: "Bộ phận chấm công", value:4},
-        { text: "Bộ phận IT", value: 5}
+      parentDepartmentName: "Khối nhân sự",
+      childDepartment: [
+        { childDepartmentName: "Bộ phận tính lương", value: 5 },
+        { childDepartmentName: "Bộ phận chấm công", value: 6 },
+        { childDepartmentName: "Bộ phận IT", value: 7 }
       ],
     },
   ];
+
+  recursion (){
+    this.departmentService.getDepartmentList().subscribe(res => {
+      let departmentService = this.departmentService.formData;
+      if(departmentService.parentId == 0)
+      {
+        this.listItems = res
+        while(departmentService.parentId == departmentService.id) {
+          this.listItems = res;
+        }
+      }
+      this.recursion();
+    })
+  }
+
   public expandedKeys: any[] = ['0', '1'];
   public selectedKeys: any[] = [1];
 
-  public hasChildren = (item: any) => item.items && item.items.length > 0;
-  public fetchChildren = (item: any) => of(item.items);
+  public children = (dataitem: any): Observable<any[]> => of(dataitem.items);
+
+  public hasChildren = (dataitem: any): boolean => !!dataitem.items;
 
   public listDepartment: Array<Item> = [
     { text: 'Ban giám đốc', value: 1 },
@@ -83,78 +134,78 @@ export class UserUIComponent implements OnInit {
     { text: 'Bộ phận tính lương', value: 3 },
     { text: 'Bộ phận chấm công', value: 4 },
     { text: 'Bộ phận IT', value: 5 },
-];
+  ];
 
-public selectedItem: Item = this.listDepartment[1];
-
+  public selectedItem: Item = this.listDepartment[1];
 
   onSearch() {
     this.search();
   }
 
   search() {
-    this.userService.filterUser(this.userService.formData.lastName).subscribe(res=>{
-      if(res)
-      this.listUser = res;  
+    this.userService.filterUser(this.userService.formData.lastName).subscribe(res => {
+      if (res)
+        this.listUser = res;
     });
   }
 
-  getDepartmentName (departmentName: string) {
+  getDepartmentName(departmentName: string) {
     this.departmentService.getDepartmentName(departmentName).subscribe();
+  }
+
+  refresh() {
+    this.loadUserList();
   }
 
   updateUser() {
     this.formValue.markAllAsTouched();
-    if(this.formValue.valid)
-    {
-      this.notificationService.show({
-        content: "Cập nhật thành công",
-        hideAfter: 800,
-        position: { horizontal: "center", vertical: "top" },
-        animation: { type: "fade", duration: 400 },
-        type: { style: "success", icon: true },
+    if (this.formValue.valid) {
+      // this.notificationService.show({
+      //   content: "Cập nhật thành công",
+      //   hideAfter: 800,
+      //   position: { horizontal: "center", vertical: "top" },
+      //   animation: { type: "fade", duration: 400 },
+      //   type: { style: "success", icon: true },
+      // });
+      let userService = this.userService.formData;
+      userService.departmentId = this.selectedItem.value;
+      var user = new User(userService.code, userService.firstName, userService.lastName, userService.id, userService.position, userService.title, userService.departmentId);
+      this.userService.updateUser(user).subscribe(res => {
+        alert("Sửa NV thành công!");
+        this.loadUserList();
       });
     }
-    let userService = this.userService.formData;
-    userService.departmentId = this.selectedItem.value;
-    var user = new User(userService.code,userService.firstName,userService.lastName,userService.id,userService.position,userService.title,userService.departmentId);
-    this.userService.updateUser(user).subscribe();
   }
 
   addUser() {
     this.formValue.markAllAsTouched();
-    if(this.formValue.valid)
-    {
-      this.notificationService.show({
-        content: "Thêm thành công",
-        hideAfter: 800,
-        position: { horizontal: "center", vertical: "top" },
-        animation: { type: "fade", duration: 400 },
-        type: { style: "success", icon: true },
+    if (this.formValue.valid) {
+      let userService = this.userService.formData;
+      userService.departmentId = this.selectedItem.value;
+      var user = new User(userService.code, userService.firstName, userService.lastName, userService.id, userService.position, userService.title, userService.departmentId);
+      this.userService.addUser(user).subscribe((res) => {
+        alert("Thêm NV thành công!");
+        this.loadUserList();
       });
     }
-    let userService = this.userService.formData;
-    userService.departmentId = this.selectedItem.value;
-    var user = new User(userService.code, userService.firstName, userService.lastName, userService.id, userService.position, userService.title, userService.departmentId);
-    this.userService.addUser(user).subscribe();
   }
 
   removeUser(selectedRecord: any) {
+    const t = this;
     if (confirm('Ban co muon xoa record nay?')) {
       this.userService.deleteUser(selectedRecord.dataItem.id).subscribe((res) => {
-      },
-    )
-  }
+        alert("Xóa thành công");
+        t.listUser = t.listUser.filter(
+          function (o: any) {
+            return o.id !== selectedRecord.dataItem.id
+          })
+        t.gridData = process(this.listUser, this.state);
+      });
+    }
   }
 
-  editUser(selectedRecord : any) {
+  editUser(selectedRecord: any) {
     this.userService.formData = selectedRecord.dataItem;
     console.log("edit", selectedRecord.dataItem);
-  }
-  
-  refresh () {
-    this.userService.getUserList().subscribe((res) => {
-      this.listUser = res;
-    });
   }
 }

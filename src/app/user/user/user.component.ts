@@ -26,7 +26,7 @@ export class UserComponent implements OnInit {
     this.userService.formData = selectedRecord;
   }
 
-  deleteModel(id: number) {
+  deleteModel(id: any) {
     if (confirm('Ban co muon xoa record nay?')) {
         this.userService.deleteUser(id).subscribe((res) => {
         },

@@ -1,7 +1,8 @@
+import { tap } from 'rxjs/operators';
 import { User } from './user.model';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -23,16 +24,16 @@ export class UserService {
   }
 
   addUser(data: User){
-    return this.http.post(this.APIUrl, data);
+    return this.http.post(this.APIUrl, data)
   }
 
   updateUser(data: User){
     return this.http.put(`${this.APIUrl}/{id}`, data);
   }
 
-  deleteUser(id: number){
+  deleteUser(id: string){
 
-    return this.http.delete(`${this.APIUrl}/${id}`);
+    return this.http.delete(`${this.APIUrl}/${id}`,{responseType: 'text'});
   }
 
 
