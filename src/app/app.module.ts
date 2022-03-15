@@ -1,3 +1,4 @@
+import { DepartmentService } from './shared/department.service';
 import { UserService } from './shared/user.service';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -50,14 +51,14 @@ import { NotificationModule } from '@progress/kendo-angular-notification';
     TreeViewModule,
     NotificationModule,
   ],
-  //providers: [UserService],
-  providers: [
-    {
-      deps: [HttpClient],
-      provide: EditService,
-      useFactory: (jsonp: HttpClient) => () => new EditService(jsonp),
-    },
-  ],
+  providers: [UserService, DepartmentService],
+  // providers: [
+  //   {
+  //     deps: [HttpClient],
+  //     provide: EditService,
+  //     useFactory: (jsonp: HttpClient) => () => new EditService(jsonp),
+  //   },
+  // ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

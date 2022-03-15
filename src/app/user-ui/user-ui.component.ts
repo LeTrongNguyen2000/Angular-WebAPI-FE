@@ -1,32 +1,27 @@
 import { State, process } from '@progress/kendo-data-query';
 import { User } from 'src/app/shared/user.model';
-import { FormControl, NgForm } from '@angular/forms';
+import { FormControl } from '@angular/forms';
 import { FormGroup } from '@angular/forms';
 import { DepartmentService } from './../shared/department.service';
 import { UserService } from './../shared/user.service';
-import { Component, DoCheck, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { TreeItem } from "@progress/kendo-angular-treeview";
-import { of, BehaviorSubject, switchMap, Subject, Subscription, Observable } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { NotificationService } from "@progress/kendo-angular-notification";
-import { HttpHeaders } from '@angular/common/http';
 import { DataStateChangeEvent, GridDataResult } from '@progress/kendo-angular-grid';
 
-interface Item {
-  text: string;
-  value: number;
-}
 @Component({
   selector: 'app-user-ui',
   templateUrl: './user-ui.component.html',
   styleUrls: ['./user-ui.component.scss']
 })
 export class UserUIComponent implements OnInit {
+  parentDepartmentName: any;
 
-  constructor(public userService: UserService, public departmentService: DepartmentService, private notificationService: NotificationService,
-  ) { }
+  constructor(public userService: UserService, public departmentService: DepartmentService) { }
   listUser: Array<any> = [];
-  //listDepartment: any;
-  listItems:  any ;
+  listRecursion: any;
+  listChildDepartment: Array<any> = [];
   subScription!: Subscription;
 
   public state: State = {
@@ -40,8 +35,20 @@ export class UserUIComponent implements OnInit {
     },
   };
 
-
   public gridData: GridDataResult = process(this.listUser, this.state);
+
+  public formValue: FormGroup = new FormGroup({
+    code: new FormControl(),
+    firstName: new FormControl(),
+    lastName: new FormControl(),
+    title: new FormControl(),
+    department: new FormControl(),
+    position: new FormControl(),
+    name: new FormControl(),
+    departmentId: new FormControl(),
+  });
+
+  public selectedDepartmentId: any;
 
   ngOnInit(): void {
     this.loadData();
@@ -52,10 +59,14 @@ export class UserUIComponent implements OnInit {
       this.listUser = res;
       this.gridData = process(this.listUser, this.state);
     });
-    this.departmentService.getDepartmentList().subscribe((res) => {
-      this.listItems = res;
-      console.log("departmentList", res);
+    this.departmentService.getChildDepartment().subscribe((res) => {
+      this.listChildDepartment = res;
+      console.log("getChildDepartment", res);
     });
+    this.departmentService.recursion().subscribe(res => {
+      this.listRecursion = res;
+      console.log("RECURSION", res);
+    })
   }
 
   loadUserList() {
@@ -70,91 +81,11 @@ export class UserUIComponent implements OnInit {
     this.gridData = process(this.listUser, this.state);
   }
 
-  public formValue: FormGroup = new FormGroup({
-    code: new FormControl(),
-    firstName: new FormControl(),
-    lastName: new FormControl(),
-    title: new FormControl(),
-    department: new FormControl(),
-    position: new FormControl(),
-    name: new FormControl(),
-    departmentId: new FormControl(),
-  });
-
   public onSelectionChange(event: TreeItem): void {
-    this.userService.filterByDepartment(event.dataItem.value).subscribe(res => {
+    this.userService.filterByDepartment(event.dataItem.Id).subscribe(res => {
       this.listUser = res;
       this.gridData = process(this.listUser, this.state);
     });
-  }
-
-
-  public data: any[] = [
-    {
-      parentDepartmentName: "Tổng công ty nhân sự Việt Nam",
-      childDepartment: [
-        { childDepartmentName: "Ban giám đốc", value: 3 },
-        { childDepartmentName: "Ban tổng giám đốc", value: 4 },
-      ],
-    },
-    {
-      parentDepartmentName: "Khối nhân sự",
-      childDepartment: [
-        { childDepartmentName: "Bộ phận tính lương", value: 5 },
-        { childDepartmentName: "Bộ phận chấm công", value: 6 },
-        { childDepartmentName: "Bộ phận IT", value: 7 }
-      ],
-    },
-  ];
-
-  recursion (){
-    this.departmentService.getDepartmentList().subscribe(res => {
-      let departmentService = this.departmentService.formData;
-      if(departmentService.parentId == 0)
-      {
-        this.listItems = res
-        while(departmentService.parentId == departmentService.id) {
-          this.listItems = res;
-        }
-      }
-      this.recursion();
-    })
-  }
-
-  public expandedKeys: any[] = ['0', '1'];
-  public selectedKeys: any[] = [1];
-
-  public children = (dataitem: any): Observable<any[]> => of(dataitem.items);
-
-  public hasChildren = (dataitem: any): boolean => !!dataitem.items;
-
-  public listDepartment: Array<Item> = [
-    { text: 'Ban giám đốc', value: 1 },
-    { text: 'Ban tổng giám đốc', value: 2 },
-    { text: 'Bộ phận tính lương', value: 3 },
-    { text: 'Bộ phận chấm công', value: 4 },
-    { text: 'Bộ phận IT', value: 5 },
-  ];
-
-  public selectedItem: Item = this.listDepartment[1];
-
-  onSearch() {
-    this.search();
-  }
-
-  search() {
-    this.userService.filterUser(this.userService.formData.lastName).subscribe(res => {
-      if (res)
-        this.listUser = res;
-    });
-  }
-
-  getDepartmentName(departmentName: string) {
-    this.departmentService.getDepartmentName(departmentName).subscribe();
-  }
-
-  refresh() {
-    this.loadUserList();
   }
 
   updateUser() {
@@ -168,7 +99,7 @@ export class UserUIComponent implements OnInit {
       //   type: { style: "success", icon: true },
       // });
       let userService = this.userService.formData;
-      userService.departmentId = this.selectedItem.value;
+      userService.departmentId = this.selectedDepartmentId.id;
       var user = new User(userService.code, userService.firstName, userService.lastName, userService.id, userService.position, userService.title, userService.departmentId);
       this.userService.updateUser(user).subscribe(res => {
         alert("Sửa NV thành công!");
@@ -181,7 +112,7 @@ export class UserUIComponent implements OnInit {
     this.formValue.markAllAsTouched();
     if (this.formValue.valid) {
       let userService = this.userService.formData;
-      userService.departmentId = this.selectedItem.value;
+      userService.departmentId = this.selectedDepartmentId.id;
       var user = new User(userService.code, userService.firstName, userService.lastName, userService.id, userService.position, userService.title, userService.departmentId);
       this.userService.addUser(user).subscribe((res) => {
         alert("Thêm NV thành công!");
@@ -208,4 +139,5 @@ export class UserUIComponent implements OnInit {
     this.userService.formData = selectedRecord.dataItem;
     console.log("edit", selectedRecord.dataItem);
   }
+
 }

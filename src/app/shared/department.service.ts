@@ -26,4 +26,11 @@ export class DepartmentService {
     return this.http.get<any>(`${this.APIUrl}/DepartmentName?DepartmentName=${departmentName}`);
   }
 
+  recursion(): Observable<Department[]>{
+    return this.http.get<any>(`${this.APIUrl}/Recursion`);
+  }
+
+  getChildDepartment(): Observable<Department[]>{
+    return this.http.get<any>(`${this.APIUrl}/GetChildDepartment`);
+  }
 }

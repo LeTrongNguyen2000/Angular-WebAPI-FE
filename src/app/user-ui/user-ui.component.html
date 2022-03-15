@@ -23,33 +23,17 @@
         </svg>
     </a>
 </div>
+<!-- Toolbar -->
 
+<!-- Body -->
 <div class="row boxGrid">
     <div class="col-md-3">
         <div class="container-fluid" style="width: 100%; height: 100%;">
             <br>    
-            <!-- <kendo-treeview
-            
-                [filterable]="true"
-                [nodes]="data"
-                textField="text"
-                [hasChildren]="hasChildren"
-                [children]="fetchChildren"
-    
-                kendoTreeViewExpandable
-                [expandedKeys]="expandedKeys"
-    
-                kendoTreeViewSelectable
-                selectBy="text"
-                [(selectedKeys)]="selectedKeys"
-                (selectionChange)="onSelectionChange($event)"
-                
-            >
-            </kendo-treeview> -->
-            <kendo-treeview kendoTreeViewExpandable
-            kendoTreeViewHierarchyBinding  [nodes]="data" [textField]="['parentDepartmentName', 'childDepartmentName']"
-            childrenField="childDepartment" [children]="children" [hasChildren]="hasChildren"
-            (selectionChange)="onSelectionChange($event)" >
+            <kendo-treeview kendoTreeViewExpandable [filterable]="true"
+            kendoTreeViewHierarchyBinding  [nodes]="listRecursion" [textField]="['Name', 'Name']"
+            childrenField="Children" 
+             selectBy="text" (selectionChange)="onSelectionChange($event)">
             </kendo-treeview>
         </div>
     </div>
@@ -112,8 +96,8 @@
                                     <div class="col-sm-6" style="margin-top: 13px">
                                         <kendo-formfield>
                                             <span>Phòng ban:</span>
-                                            <kendo-combobox [data]="listDepartment" #name formControlName="departmentId"
-                                                textField="text" valueField="value" [(ngModel)]="selectedItem" required>
+                                            <kendo-combobox [data]="listChildDepartment" #name formControlName="departmentId"
+                                                textField="name" valueField="id" [(ngModel)]="selectedDepartmentId" required>
                                             </kendo-combobox>
                                             <kendo-formerror>
                                                 Phòng ban không được để trống
@@ -204,8 +188,8 @@
                                     <div class="col-sm-6" style="margin-top: 13px">
                                         <kendo-formfield>
                                             <span>Phòng ban:</span>
-                                            <kendo-combobox [data]="listDepartment" #name formControlName="departmentId"
-                                                textField="text" valueField="value" [(ngModel)]="selectedItem" required>
+                                            <kendo-combobox [data]="listChildDepartment" #name formControlName="departmentId"
+                                                textField="name" valueField="id" [(ngModel)]="selectedDepartmentId" required>
                                             </kendo-combobox>
                                             <kendo-formerror>
                                                 Phòng ban không được để trống
@@ -265,10 +249,5 @@
         </kendo-grid>
     </div>
 </div>
-<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
-<!-- * * * * * * * * * * * The content above * * * * * * * * * * * -->
-<!-- * * * * * * * * * * is only a placeholder * * * * * * * * * * -->
-<!-- * * * * * * * * * * and can be replaced. * * * * * * * * * * * -->
-<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
-<!-- * * * * * * * * * * End of Placeholder * * * * * * * * * * * -->
+<!-- Body -->
 <router-outlet></router-outlet>
