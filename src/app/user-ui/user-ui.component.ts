@@ -4,12 +4,11 @@ import { FormControl } from '@angular/forms';
 import { FormGroup } from '@angular/forms';
 import { DepartmentService } from './../shared/department.service';
 import { UserService } from './../shared/user.service';
-import { Component, OnInit } from '@angular/core';
-import { TreeItem } from "@progress/kendo-angular-treeview";
-import { Subscription } from 'rxjs';
-import { NotificationService } from "@progress/kendo-angular-notification";
-import { DataStateChangeEvent, GridDataResult } from '@progress/kendo-angular-grid';
-
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { TreeItem, TreeViewComponent } from "@progress/kendo-angular-treeview";
+import { filter, Subscription } from 'rxjs';
+import { DataStateChangeEvent, GridComponent, GridDataResult, PageChangeEvent } from '@progress/kendo-angular-grid';
+import { debounceTime } from 'rxjs/operators';
 @Component({
   selector: 'app-user-ui',
   templateUrl: './user-ui.component.html',
@@ -24,16 +23,35 @@ export class UserUIComponent implements OnInit {
   listChildDepartment: Array<any> = [];
   subScription!: Subscription;
 
+  closeResult = '';
+
   public state: State = {
     skip: 0,
-    take: 5,
-
+    take: 15,
+    
     // Initial filter descriptor
     filter: {
       logic: "and",
-      filters: [{ field: "firstName", operator: "contains", value: "" }],
+      filters: [],
     },
+
   };
+
+  public listPosition: Array<string> = [
+    "Quản lí cấp cao",
+    "Quản lí",
+    "Nhân viên"
+  ]
+
+  public listTitle: Array<string> = [
+    "Giám đốc điều hành",
+    "Giám đốc tài chính",
+    "Giám đốc khu vực",
+  ]
+
+
+  @ViewChild(GridComponent) public grid!: GridComponent;
+  @ViewChild(TreeViewComponent) public treView!: TreeViewComponent;
 
   public gridData: GridDataResult = process(this.listUser, this.state);
 
@@ -48,7 +66,7 @@ export class UserUIComponent implements OnInit {
     departmentId: new FormControl(),
   });
 
-  public selectedDepartmentId: any;
+  public selectedDepartment: any;
 
   ngOnInit(): void {
     this.loadData();
@@ -61,15 +79,14 @@ export class UserUIComponent implements OnInit {
     });
     this.departmentService.getChildDepartment().subscribe((res) => {
       this.listChildDepartment = res;
-      console.log("getChildDepartment", res);
     });
     this.departmentService.recursion().subscribe(res => {
       this.listRecursion = res;
-      console.log("RECURSION", res);
     })
   }
 
   loadUserList() {
+    this.clearForm();
     this.userService.getUserList().subscribe((res) => {
       this.listUser = res;
       this.gridData = process(this.listUser, this.state);
@@ -79,12 +96,40 @@ export class UserUIComponent implements OnInit {
   public dataStateChange(state: DataStateChangeEvent): void {
     this.state = state;
     this.gridData = process(this.listUser, this.state);
+
+    this.state.filter?.filters.forEach((filter:any)=> {
+      if(filter.field == "firstName") {
+        this.userService.searchUser("/SearchUserByFirstName?FirstName=",filter.firstName);
+
+      } else if(filter.field == "lastName") {
+        this.userService.searchUser("/SearchUserByLastName?LastName=",filter.lastName);
+
+      } else if(filter.field == "departmentName") {
+        this.userService.searchUser("/SearchUserByDepartmentName?DepartmentName=",filter.departmentName);
+
+      } else if(filter.field == "position") {
+        this.userService.searchUser("/SearchUserByPosition?Position=",filter.position);
+
+      } else if(filter.field == "title") {
+        this.userService.searchUser("/SearchUserByTitle?Title=",filter.title);
+      }
+    });
   }
 
   public onSelectionChange(event: TreeItem): void {
     this.userService.filterByDepartment(event.dataItem.Id).subscribe(res => {
-      this.listUser = res;
-      this.gridData = process(this.listUser, this.state);
+      if (event.dataItem.Id == 2) {
+        this.userService.filterByParentDepartment(2).subscribe(res => {
+          this.listUser = res;
+          this.gridData = process(this.listUser, this.state);
+        })
+      } else if(event.dataItem.Id == 1) {
+        this.loadUserList();
+      }
+      else {
+        this.listUser = res;
+        this.gridData = process(this.listUser, this.state);
+      }
     });
   }
 
@@ -99,11 +144,12 @@ export class UserUIComponent implements OnInit {
       //   type: { style: "success", icon: true },
       // });
       let userService = this.userService.formData;
-      userService.departmentId = this.selectedDepartmentId.id;
+      userService.departmentId = this.selectedDepartment.id;
       var user = new User(userService.code, userService.firstName, userService.lastName, userService.id, userService.position, userService.title, userService.departmentId);
       this.userService.updateUser(user).subscribe(res => {
         alert("Sửa NV thành công!");
         this.loadUserList();
+        this.formValue.reset();
       });
     }
   }
@@ -111,12 +157,20 @@ export class UserUIComponent implements OnInit {
   addUser() {
     this.formValue.markAllAsTouched();
     if (this.formValue.valid) {
-      let userService = this.userService.formData;
-      userService.departmentId = this.selectedDepartmentId.id;
-      var user = new User(userService.code, userService.firstName, userService.lastName, userService.id, userService.position, userService.title, userService.departmentId);
-      this.userService.addUser(user).subscribe((res) => {
-        alert("Thêm NV thành công!");
-        this.loadUserList();
+      this.userService.getUserList().subscribe((res) => {
+        let userService = this.userService.formData;
+        userService.departmentId = this.selectedDepartment.id;
+        var user = new User(userService.code, userService.firstName, userService.lastName, userService.id, userService.position, userService.title, userService.departmentId);
+        this.userService.addUser(user).subscribe((res: any) => {
+          if (res && res.error) {
+            alert("Trùng mã NV!");
+          }
+          else {
+            alert("Thêm NV thành công!");
+          }
+          this.loadData();
+          this.formValue.reset();
+        });
       });
     }
   }
@@ -137,7 +191,29 @@ export class UserUIComponent implements OnInit {
 
   editUser(selectedRecord: any) {
     this.userService.formData = selectedRecord.dataItem;
-    console.log("edit", selectedRecord.dataItem);
+    this.departmentService.getDepartment(selectedRecord.dataItem.departmentId).subscribe(res => {
+      this.selectedDepartment = res;
+    })
   }
 
+  clearForm() {
+    this.formValue.reset();
+    this.userService.getUserList().subscribe((res) => {
+      this.listUser = res;
+      this.gridData = process(this.listUser, this.state);
+    });
+  }
+
+  url = '';
+  onSelectFile(event:any) {
+    if (event.target.files && event.target.files[0]) {
+      var reader = new FileReader();
+      console.log("Check url img", event.target.files[0].name);
+      reader.readAsDataURL(event.target.files[0]); // read file as data url
+
+      reader.onload = (event:any) => { // called once readAsDataURL is completed
+        this.url = event.target.result;
+      }
+    }
+  }
 }

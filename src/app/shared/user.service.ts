@@ -36,16 +36,16 @@ export class UserService {
     return this.http.delete(`${this.APIUrl}/${id}`,{responseType: 'text'});
   }
 
-
-  filterUser(name: string) {
-    return this.http.get<any>(`${this.APIUrl}` + "/UserName?UserName=" +`${name}`);
+  searchUser(URL: string,property: string) {
+    return this.http.get<any>(`${this.APIUrl}${URL}` +`${property}`);
   }
 
   filterByDepartment(departmentId: number) {
     return this.http.get<any>(`${this.APIUrl}` + "/departmentId?departmentId=" +`${departmentId}`);
   }
-  generateURL(){
-    return `${this.APIUrl}/`;
+
+  filterByParentDepartment(departmentId: number) {
+    return this.http.get<any>(`${this.APIUrl}` + "/FilterByParentDepartment?DepartmentId=" +`${departmentId}`);
   }
 
 }

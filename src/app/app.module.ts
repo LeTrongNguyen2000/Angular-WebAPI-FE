@@ -6,14 +6,8 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { UserFormComponent } from './user/user-form/user-form.component';
-import { UserComponent } from './user/user/user.component';
-import { HttpClient, HttpClientModule, HttpClientJsonpModule } from '@angular/common/http';
+import { HttpClientModule, HttpClientJsonpModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { UserGridDataComponent } from './user/user-grid-data/user-grid-data.component';
-import { UserFormFieldComponent } from './user/user-form-field/user-form-field.component';
-import { UserReactiveFormsComponent } from './user/user-reactive-forms/user-reactive-forms.component';
-import { EditService } from './shared/edit.service';
 import { GridModule } from '@progress/kendo-angular-grid';
 import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
 import { LabelModule } from '@progress/kendo-angular-label';
@@ -22,16 +16,12 @@ import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { UserUIComponent } from './user-ui/user-ui.component';
 import { TreeViewModule } from '@progress/kendo-angular-treeview';
 import { NotificationModule } from '@progress/kendo-angular-notification';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    UserFormComponent,
-    UserComponent,
-    UserGridDataComponent,
-    UserFormFieldComponent,
-    UserReactiveFormsComponent,
     UserUIComponent,
   ],
   imports: [
@@ -50,6 +40,7 @@ import { NotificationModule } from '@progress/kendo-angular-notification';
     DropDownsModule,
     TreeViewModule,
     NotificationModule,
+    NgbModule,
   ],
   providers: [UserService, DepartmentService],
   // providers: [
