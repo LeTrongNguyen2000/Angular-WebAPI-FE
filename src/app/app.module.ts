@@ -17,12 +17,18 @@ import { UserUIComponent } from './user-ui/user-ui.component';
 import { TreeViewModule } from '@progress/kendo-angular-treeview';
 import { NotificationModule } from '@progress/kendo-angular-notification';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { EditorModule } from '@progress/kendo-angular-editor';
+import { UploadsModule } from '@progress/kendo-angular-upload';
+import { UploadComponent } from './upload/upload.component';
+
+
 
 
 @NgModule({
   declarations: [
     AppComponent,
     UserUIComponent,
+    UploadComponent,
   ],
   imports: [
     BrowserModule,
@@ -41,6 +47,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     TreeViewModule,
     NotificationModule,
     NgbModule,
+    EditorModule,
+    UploadsModule,
   ],
   providers: [UserService, DepartmentService],
   // providers: [

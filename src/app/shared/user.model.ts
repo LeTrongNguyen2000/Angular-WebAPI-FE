@@ -6,9 +6,10 @@ export class User{
     position: string;
     title: string;
     departmentId: number;
+    image: string;
 
     constructor(code:string = "",firstName:string ="",lastName:string ="",id:number = 0,position:string ="",
-     title:string ="", departmentId: number = 0){
+     title:string ="", departmentId: number = 0, image: string = ""){
         this.code = code;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -16,5 +17,6 @@ export class User{
         this.id = id;
         this.position = position;
         this.departmentId = departmentId;
+        this.image = image;
     }
 }
