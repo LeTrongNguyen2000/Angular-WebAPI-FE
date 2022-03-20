@@ -4,31 +4,32 @@ import { FormControl } from '@angular/forms';
 import { FormGroup } from '@angular/forms';
 import { DepartmentService } from './../shared/department.service';
 import { UserService } from './../shared/user.service';
-import { Component, OnInit, ViewChild, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, ViewChild, Output, EventEmitter, ElementRef } from '@angular/core';
 import { TreeItem, TreeViewComponent } from "@progress/kendo-angular-treeview";
 import { filter, Subscription } from 'rxjs';
 import { DataStateChangeEvent, GridComponent, GridDataResult, PageChangeEvent } from '@progress/kendo-angular-grid';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+
 @Component({
   selector: 'app-user-ui',
   templateUrl: './user-ui.component.html',
   styleUrls: ['./user-ui.component.scss']
 })
 export class UserUIComponent implements OnInit {
+
   parentDepartmentName: any;
-
-  public response!: { dbPath: '' };
-
-  constructor(public userService: UserService, public departmentService: DepartmentService,
-    private domain: DomSanitizer, private modalService: NgbModal) { }
+  closeResult = '';
+  getDepartmentId: any;
+  getImagePathToUpdate = "";
   listUser: Array<any> = [];
   listRecursion: any;
   listChildDepartment: Array<any> = [];
   subScription!: Subscription;
+  value: any;
 
-  closeResult = '';
-
+  public response!: { dbPath: "" };
+  public events: string[] = [];
   public state: State = {
     skip: 0,
     take: 15,
@@ -40,6 +41,12 @@ export class UserUIComponent implements OnInit {
     },
 
   };
+  public gridData: GridDataResult = process(this.listUser, this.state);
+  public valueDepth = 0;
+
+  constructor(public userService: UserService, public departmentService: DepartmentService,
+    private domain: DomSanitizer, private modalService: NgbModal) { }
+
 
   public listPosition: Array<string> = [
     "Quản lí cấp cao",
@@ -53,13 +60,8 @@ export class UserUIComponent implements OnInit {
     "Giám đốc khu vực",
   ]
 
-
-
   @ViewChild(GridComponent) public grid!: GridComponent;
   @ViewChild(TreeViewComponent) public treView!: TreeViewComponent;
-
-
-  public gridData: GridDataResult = process(this.listUser, this.state);
 
   public formValue: FormGroup = new FormGroup({
     code: new FormControl(),
@@ -73,10 +75,6 @@ export class UserUIComponent implements OnInit {
     image: new FormControl(),
   });
 
-  public selectedDepartment: any;
-
-
-
   ngOnInit(): void {
     this.loadData();
   }
@@ -87,19 +85,26 @@ export class UserUIComponent implements OnInit {
       this.gridData = process(this.listUser, this.state);
     });
     this.departmentService.getChildDepartment().subscribe((res) => {
-      this.listChildDepartment = res;
+      this.listChildDepartment = res;     
     });
     this.departmentService.recursion().subscribe(res => {
       this.listRecursion = res;
+      console.log("DATA DropdownTree: ", res);
     })
   }
 
   loadUserList() {
-    this.clearForm();
     this.userService.getUserList().subscribe((res) => {
       this.listUser = res;
       this.gridData = process(this.listUser, this.state);
     });
+  }
+
+  loadListRecursion() {
+    this.departmentService.recursion().subscribe(res => {
+      this.listRecursion = res;
+      console.log("DATA DropdownTree: ", res);
+    })
   }
 
   public dataStateChange(state: DataStateChangeEvent): void {
@@ -142,36 +147,60 @@ export class UserUIComponent implements OnInit {
     });
   }
 
+  public valueChange(value: any): void {
+    this.log("valueChange", JSON.stringify(value.Id));
+    this.getDepartmentId = JSON.stringify(value.Id);
+  }
+
+  private log(event: string, arg?: any): void {
+    this.events.unshift(`${event} ${arg || ''}`);
+  }
+
+  editUser(selectedRecord: any) {
+    let userService = this.userService.formData;
+    this.userService.formData = selectedRecord.dataItem;
+    this.departmentService.getDepartmentId(selectedRecord.dataItem.departmentId).subscribe((res:any) => {
+      console.log("CHECK DepartmentId", res[0]);
+      this.value = res[0];
+      this.getDepartmentId = res[0].Id;
+    })
+  }
+
+  public uploadFinished = (event: any) => {
+    let userService = this.userService.formData;
+    this.response = event;
+    userService.image = this.response.dbPath;
+    console.log("CHECK IMAGE", this.response);
+  }
+
+  public getImage = (serverPath: string) => {
+    let userService = this.userService.formData;
+    userService.image = serverPath;
+    return this.domain.bypassSecurityTrustUrl(`http://localhost:63019/${serverPath}`);
+  }
+
 
   updateUser() {
     this.formValue.markAllAsTouched();
     if (this.formValue.valid) {
-      // this.notificationService.show({
-      //   content: "Cập nhật thành công",
-      //   hideAfter: 800,
-      //   position: { horizontal: "center", vertical: "top" },
-      //   animation: { type: "fade", duration: 400 },
-      //   type: { style: "success", icon: true },
-      // });
       let userService = this.userService.formData;
-      userService.departmentId = this.selectedDepartment.id;
-      userService.image = this.response.dbPath;
+      userService.departmentId = this.getDepartmentId;
       var user = new User(userService.code, userService.firstName, userService.lastName, userService.id, userService.position, userService.title, userService.departmentId, userService.image);
       this.userService.updateUser(user).subscribe(res => {
         alert("Sửa NV thành công!");
         this.loadUserList();
-        this.formValue.reset();
       });
+    }    else {
+      alert("Cập nhật nhân viên không thành công!");
     }
   }
 
   addUser() {
     this.formValue.markAllAsTouched();
-    alert(this.selectedDepartment);
     if (this.formValue.valid) {
       this.userService.getUserList().subscribe((res) => {
         let userService = this.userService.formData;
-        userService.departmentId = this.selectedDepartment;
+        userService.departmentId = this.getDepartmentId;
         userService.image = this.response.dbPath;
         var user = new User(userService.code, userService.firstName, userService.lastName, userService.id, userService.position, userService.title, userService.departmentId, userService.image);
         this.userService.addUser(user).subscribe((res: any) => {
@@ -179,21 +208,16 @@ export class UserUIComponent implements OnInit {
             alert("Trùng mã NV!");
           }
           else {
-            alert("Thêm NV thành công!");
+            alert("Thêm NV thành công!");          
+            this.loadUserList();
           }
-          this.loadData();
-          this.formValue.reset();
         });
       });
     }
     else {
-      alert("Form invalid!");
+      alert("Thêm nhân viên không thành công!");
     }
   }
-  // checkDepartmentId() {
-  //   let userService = this.userService.formData;
-  //   console.log("CHECK DEPARTMENTid", userService.);
-  // }
 
   removeUser(selectedRecord: any) {
     const t = this;
@@ -209,13 +233,6 @@ export class UserUIComponent implements OnInit {
     }
   }
 
-  editUser(selectedRecord: any) {
-    this.userService.formData = selectedRecord.dataItem;
-    this.departmentService.getDepartment(selectedRecord.dataItem.departmentId).subscribe(res => {
-      this.selectedDepartment = res;
-    })
-  }
-
   clearForm() {
     this.formValue.reset();
     this.userService.getUserList().subscribe((res) => {
@@ -224,42 +241,15 @@ export class UserUIComponent implements OnInit {
     });
   }
 
-  // url = '';
-  // onSelectFile(event:any) {
-  //   if (event.target.files && event.target.files[0]) {
-  //     this.response = event;
-  //     var reader = new FileReader();
-  //     //console.log("Check url img", event.target.files[0].name);
-  //     reader.readAsDataURL(event.target.files[0]); // read file as data url
-
-  //     reader.onload = (event:any) => { // called once readAsDataURL is completed
-  //       this.url = event.target.result;
-  //     }
-  //   }
-  // }
-
-  // uploadSaveUrl = "saveUrl"; // should represent an actual API endpoint
-  // uploadRemoveUrl = "removeUrl"; // should represent an actual API endpoint
-
-  public uploadFinished = (event: any) => {
-    this.response = event;
-    console.log("CHECK IMAGE", this.response.dbPath);
-  }
-
-  public getImage = (serverPath: string) => {
-    return this.domain.bypassSecurityTrustUrl(`http://localhost:63019/${serverPath}`);
-  }
-
 
   openModal(content: any) {
     this.modalService.open(content, { size: 'lg' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
-      console.log("CHECK MODALLLLLLLLLLLLLL", this.closeResult);
     }, (reason) => {
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
-    });
+    });   
   }
-
+  
   private getDismissReason(reason: any): string {
     if (reason === ModalDismissReasons.ESC) {
       return 'by pressing ESC';
@@ -267,6 +257,18 @@ export class UserUIComponent implements OnInit {
       return 'by clicking on a backdrop';
     } else {
       return `with: ${reason}`;
+    }
+  }
+
+
+  public onFilterDepartment(event: string): void {
+    this.departmentService.getDepartmentName(event).subscribe((res) => {
+      this.listRecursion = res;
+    });
+    //Check field search để trống hoặc bấm xóa field
+    if(event == "") 
+    {
+      this.loadListRecursion();
     }
   }
 

@@ -33,4 +33,8 @@ export class DepartmentService {
   getChildDepartment(): Observable<Department[]>{
     return this.http.get<any>(`${this.APIUrl}/GetChildDepartment`);
   }
+  
+  getDepartmentId(id: number): Observable<Department[]>{
+    return this.http.get<any>(`${this.APIUrl}/GetDepartmentId?Id=${id}`);
+  }
 }

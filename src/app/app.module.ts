@@ -1,3 +1,4 @@
+import { EventLogComponent } from './user-ui/event-log.component';
 import { DepartmentService } from './shared/department.service';
 import { UserService } from './shared/user.service';
 import { NgModule } from '@angular/core';
@@ -29,6 +30,7 @@ import { UploadComponent } from './upload/upload.component';
     AppComponent,
     UserUIComponent,
     UploadComponent,
+    EventLogComponent
   ],
   imports: [
     BrowserModule,
