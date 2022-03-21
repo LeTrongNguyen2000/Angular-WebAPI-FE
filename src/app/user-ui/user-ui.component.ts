@@ -32,14 +32,13 @@ export class UserUIComponent implements OnInit {
   public events: string[] = [];
   public state: State = {
     skip: 0,
-    take: 15,
+    take: 5,
 
     // Initial filter descriptor
     filter: {
       logic: "and",
       filters: [],
     },
-
   };
   public gridData: GridDataResult = process(this.listUser, this.state);
   public valueDepth = 0;
@@ -85,11 +84,10 @@ export class UserUIComponent implements OnInit {
       this.gridData = process(this.listUser, this.state);
     });
     this.departmentService.getChildDepartment().subscribe((res) => {
-      this.listChildDepartment = res;     
+      this.listChildDepartment = res;
     });
     this.departmentService.recursion().subscribe(res => {
       this.listRecursion = res;
-      console.log("DATA DropdownTree: ", res);
     })
   }
 
@@ -103,7 +101,6 @@ export class UserUIComponent implements OnInit {
   loadListRecursion() {
     this.departmentService.recursion().subscribe(res => {
       this.listRecursion = res;
-      console.log("DATA DropdownTree: ", res);
     })
   }
 
@@ -159,7 +156,7 @@ export class UserUIComponent implements OnInit {
   editUser(selectedRecord: any) {
     let userService = this.userService.formData;
     this.userService.formData = selectedRecord.dataItem;
-    this.departmentService.getDepartmentId(selectedRecord.dataItem.departmentId).subscribe((res:any) => {
+    this.departmentService.getDepartmentId(selectedRecord.dataItem.departmentId).subscribe((res: any) => {
       console.log("CHECK DepartmentId", res[0]);
       this.value = res[0];
       this.getDepartmentId = res[0].Id;
@@ -181,22 +178,27 @@ export class UserUIComponent implements OnInit {
 
 
   updateUser() {
+    var btn = document.getElementById("btnCloseModalUpdate");
     this.formValue.markAllAsTouched();
+
     if (this.formValue.valid) {
       let userService = this.userService.formData;
       userService.departmentId = this.getDepartmentId;
       var user = new User(userService.code, userService.firstName, userService.lastName, userService.id, userService.position, userService.title, userService.departmentId, userService.image);
       this.userService.updateUser(user).subscribe(res => {
         alert("Sửa NV thành công!");
+        btn?.click();
         this.loadUserList();
       });
-    }    else {
+    } else {
       alert("Cập nhật nhân viên không thành công!");
     }
   }
 
   addUser() {
+    var btn = document.getElementById("btnClose");
     this.formValue.markAllAsTouched();
+
     if (this.formValue.valid) {
       this.userService.getUserList().subscribe((res) => {
         let userService = this.userService.formData;
@@ -208,7 +210,9 @@ export class UserUIComponent implements OnInit {
             alert("Trùng mã NV!");
           }
           else {
-            alert("Thêm NV thành công!");          
+            alert("Thêm NV thành công!");
+            //Gọi DOM button close để close modal khi insert thành công
+            btn?.click();
             this.loadUserList();
           }
         });
@@ -228,6 +232,9 @@ export class UserUIComponent implements OnInit {
           function (o: any) {
             return o.id !== selectedRecord.dataItem.id
           })
+        if (this.state.take == 0) {
+          //this.state.skip = 0;
+        }
         t.gridData = process(this.listUser, this.state);
       });
     }
@@ -235,6 +242,7 @@ export class UserUIComponent implements OnInit {
 
   clearForm() {
     this.formValue.reset();
+    this.userService.formData.image = "";
     this.userService.getUserList().subscribe((res) => {
       this.listUser = res;
       this.gridData = process(this.listUser, this.state);
@@ -247,9 +255,9 @@ export class UserUIComponent implements OnInit {
       this.closeResult = `Closed with: ${result}`;
     }, (reason) => {
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
-    });   
+    });
   }
-  
+
   private getDismissReason(reason: any): string {
     if (reason === ModalDismissReasons.ESC) {
       return 'by pressing ESC';
@@ -262,14 +270,28 @@ export class UserUIComponent implements OnInit {
 
 
   public onFilterDepartment(event: string): void {
-    this.departmentService.getDepartmentName(event).subscribe((res) => {
-      this.listRecursion = res;
-    });
     //Check field search để trống hoặc bấm xóa field
-    if(event == "") 
-    {
+    // while (event == "") {
+    //   this.loadListRecursion();
+    // }
+    if (event == "") {
       this.loadListRecursion();
+    }
+    else {
+      this.departmentService.recursionToFilter(event).subscribe((res) => {
+        this.listRecursion = res;
+      });
     }
   }
 
+  public filterDepartmentFromDowndownTree(event: string): void {
+    if (event == "") {
+      this.loadListRecursion();
+    }
+    else {
+      this.departmentService.recursionToFilter(event).subscribe((res) => {
+        this.listRecursion = res;
+      });
+    }
+  }
 }

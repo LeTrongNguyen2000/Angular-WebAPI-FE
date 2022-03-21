@@ -23,105 +23,103 @@
         </svg>
     </a>
 </div>
-
 <!-- Toolbar -->
+
 <!-- Modal -->
 
 
 <ng-template #add let-modal>
     <div class="modal-header">
         <h2 class="modal-title" id="modal-basic-title">Thêm NV</h2>
-        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')" (click)="clearForm()"></button>
+        <button id="btnClose" type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"
+            (click)="clearForm()"></button>
     </div>
     <form [formGroup]="formValue" style="font-size: 1.3rem">
         <fieldset class="k-form-fieldset">
             <div class="modal-body">
                 <div class="form-group required">
                     <div class="row">
-                        <div class="image-container">
+                        <div class="image-container" style="margin: auto;">
                             <img [src]="getImage(userService.formData.image)" class="poi" formControlImage="image"
                                 #image aria-required="true">
-                            <span class="message">Nhấp upload file để cập nhật avatar</span>
-                        </div>
-
-                        <div style="margin-left: 500px; margin-top: 0.1px;">
                             <app-upload (onUploadFinished)="uploadFinished($event)"></app-upload>
                         </div>
-                        <span class="message">Nhấp để cập nhật avatar</span>
-                        <br>
-                        <div class="col-sm-6">
+                    </div>
+                    <hr>
+                    <div class="flex-container">
+                        <div>
                             <kendo-formfield>
                                 <label for="recipient-name" class="col-form-label control-label">Mã NV</label>
-                                <input type="text" class="form-control" formControlName="code" #code
+                                <input kendoTextBox class="form-control" formControlName="code" #code
                                     [(ngModel)]="userService.formData.code" required />
-                                <kendo-formerror>Mã NV không được để trống</kendo-formerror>
+                                <kendo-formerror class="kendo-formerror-input">Mã NV không được để trống
+                                </kendo-formerror>
                             </kendo-formfield>
                         </div>
-                        <div class="col-sm-6">
+                        <div>
                             <kendo-formfield>
-                                <label for="recipient-name" class="col-form-label  control-label">Chức
-                                    vụ</label>
-                                <kendo-combobox [data]="listPosition" formControlName="position" #position
-                                    [(ngModel)]="userService.formData.position" required></kendo-combobox>
-                                <kendo-formerror>Chức vụ không được để trống</kendo-formerror>
-                            </kendo-formfield>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <kendo-formfield>
-                                <label for="message-text" class="col-form-label control-label">Họ:</label>
+                                <label for="message-text" class="col-form-label control-label">Họ</label>
                                 <input type="text" class="form-control" formControlName="firstName" #firstName
                                     [(ngModel)]="userService.formData.firstName" required />
-                                <kendo-formerror>
-                                    Họ không được để trống
-                                </kendo-formerror>
+                                <kendo-formerror class="kendo-formerror-input">Họ không được để trống</kendo-formerror>
                             </kendo-formfield>
                         </div>
-                        <div class="col-sm-6">
+                        <div>
                             <kendo-formfield>
-                                <label for="recipient-name" class="col-form-label control-label">Chức
-                                    danh:</label>
-                                <kendo-combobox [data]="listTitle" formControlName="title" #title
-                                    [(ngModel)]="userService.formData.title" required></kendo-combobox>
-                                <kendo-formerror>
-                                    Chức danh không được để trống
-                                </kendo-formerror>
-                            </kendo-formfield>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <kendo-formfield>
-                                <label for="recipient-name" class="col-form-label control-label">Tên:</label>
+                                <label for="recipient-name" class="col-form-label control-label">Tên</label>
                                 <input type="text" class="form-control" formControlName="lastName" #lastName
                                     [(ngModel)]="userService.formData.lastName" required />
-                                <kendo-formerror>
+                                <kendo-formerror class="kendo-formerror-input">
                                     Tên không được để trống
                                 </kendo-formerror>
                             </kendo-formfield>
                         </div>
-                        <div class="col-sm-6">
+                    </div>
+
+                    <div class="flex-container">
+                        <div>
                             <kendo-formfield>
-                                <label class="col-form-label control-label">Phòng ban:</label>
-                                <kendo-dropdowntree kendoDropDownTreeExpandable
+                                <label class="col-form-label control-label">Phòng ban</label>
+                                <kendo-dropdowntree kendoDropDownTreeExpandable [filterable]="true"
                                     [kendoDropDownTreeHierarchyBinding]="listRecursion" [textField]="['Name', 'Name']"
                                     [valueField]="['Id', 'Id']" childrenField="Children" formControlName="departmentId"
-                                    #name (valueChange)="valueChange($event)" required>
+                                    #name (valueChange)="valueChange($event)"
+                                    (filterChange)="filterDepartmentFromDowndownTree($event)" required>
                                 </kendo-dropdowntree>
-                                <kendo-formerror>
+                                <kendo-formerror class="kendo-formerror-dropdown">
                                     Phòng ban không được để trống
+                                </kendo-formerror>
+                            </kendo-formfield>
+                        </div>
+                        <div>
+                            <kendo-formfield>
+                                <label for="recipient-name" class="col-form-label control-label">Chức vụ</label>
+                                <kendo-combobox [data]="listPosition" formControlName="position" #position
+                                    [(ngModel)]="userService.formData.position" required></kendo-combobox>
+                                <kendo-formerror class="kendo-formerror-dropdown">Chức vụ không được để trống
+                                </kendo-formerror>
+                            </kendo-formfield>
+                        </div>
+                        <div>
+                            <kendo-formfield>
+                                <label for="recipient-name" class="col-form-label control-label">Chức
+                                    danh</label>
+                                <kendo-combobox [data]="listTitle" formControlName="title" #title
+                                    [(ngModel)]="userService.formData.title" required></kendo-combobox>
+                                <kendo-formerror class="kendo-formerror-dropdown">Chức danh không được để trống
                                 </kendo-formerror>
                             </kendo-formfield>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="modal-footer k-form-buttons">
-                <button type="button" class="btn btn-secondary" (click)="modal.dismiss('Cross click')" (click)="clearForm()">
+            <div class="modal-footer k-form-buttons" style="margin-top: 0px;">
+                <button type="button" class="btn btn-secondary" (click)="modal.dismiss('Cross click')"
+                    (click)="clearForm()">
                     Đóng
                 </button>
-                <button id="closeModalButton" aria-label="Close" type="button" class="btn btn-primary" (click)="addUser()">
+                <button id="closeModalButton" aria-label="Close" type="button" class="btn btn-primary"
+                    (click)="addUser()">
                     Lưu
                 </button>
             </div>
@@ -136,102 +134,91 @@
 <ng-template #update let-modal>
     <div class="modal-header">
         <h2 class="modal-title" id="modal-basic-title">Cập nhật NV</h2>
-        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')" (click)="clearForm()"></button>
+        <button id="btnCloseModalUpdate" type="button" class="btn-close" aria-label="Close"
+            (click)="modal.dismiss('Cross click')" (click)="clearForm()"></button>
     </div>
     <form [formGroup]="formValue" style="font-size: 1.3rem">
         <fieldset class="k-form-fieldset">
             <div class="modal-body">
                 <div class="form-group required">
                     <div class="row">
-                        <!-- <div class="image-container">
-                                    <img [src]="url ? url : imageURL" class="poi"
-                                        formControlImage="image" #image>
-                                    <br />
-                                    <input type='file' (change)="onSelectFile($event)" class="select-profile-picture">
-                                    <span class="message">Nhấp để cập nhật avatar</span>
-                                </div> -->
                         <div class="image-container">
                             <img [src]="getImage(userService.formData.image)" class="poi" formControlImage="image"
                                 #image aria-required="true">
-                            <span class="message">Nhấp upload file để cập nhật avatar</span>
-                        </div>
-
-                        <div style="margin-left: 500px; margin-top: 0.1px;">
                             <app-upload (onUploadFinished)="uploadFinished($event)"></app-upload>
                         </div>
-                        <span class="message">Nhấp để cập nhật avatar</span>
-                        <div class="col-sm-6">
+                    </div>
+                    <hr>
+                    <div class="flex-container">
+                        <div>
                             <kendo-formfield>
                                 <label for="recipient-name" class="col-form-label control-label">Mã NV</label>
                                 <input type="text" class="form-control" formControlName="code" #code
-                                    [(ngModel)]="userService.formData.code" required disabled/>
-                                <kendo-formerror>Mã NV không được để trống</kendo-formerror>
+                                    [(ngModel)]="userService.formData.code" required disabled />
+                                <kendo-formerror class="kendo-formerror-input">Mã NV không được để trống
+                                </kendo-formerror>
                             </kendo-formfield>
                         </div>
-                        <div class="col-sm-6">
+                        <div>
                             <kendo-formfield>
                                 <label for="recipient-name" class="col-form-label  control-label">Chức
                                     vụ</label>
-                                <kendo-combobox [data]="listPosition" formControlName="position" #position
-                                    [(ngModel)]="userService.formData.position" required></kendo-combobox>
-                                <kendo-formerror>Chức vụ không được để trống</kendo-formerror>
+                                <kendo-combobox style="height: 39px;" [data]="listPosition" formControlName="position"
+                                    #position [(ngModel)]="userService.formData.position" required></kendo-combobox>
+                                <kendo-formerror class="kendo-formerror-dropdown">Chức vụ không được để trống
+                                </kendo-formerror>
                             </kendo-formfield>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-sm-6">
+                    <div class="flex-container">
+                        <div>
                             <kendo-formfield>
-                                <label for="message-text" class="col-form-label control-label">Họ:</label>
+                                <label for="message-text" class="col-form-label control-label">Họ</label>
                                 <input type="text" class="form-control" formControlName="firstName" #firstName
                                     [(ngModel)]="userService.formData.firstName" required />
-                                <kendo-formerror>
+                                <kendo-formerror class="kendo-formerror-input">
                                     Họ không được để trống
                                 </kendo-formerror>
                             </kendo-formfield>
                         </div>
-                        <div class="col-sm-6">
+                        <div>
                             <kendo-formfield>
                                 <label for="recipient-name" class="col-form-label control-label">Chức
-                                    danh:</label>
-                                <kendo-combobox [data]="listTitle" formControlName="title" #title
+                                    danh</label>
+                                <kendo-combobox style="height: 39px;" [data]="listTitle" formControlName="title" #title
                                     [(ngModel)]="userService.formData.title" required></kendo-combobox>
-                                <kendo-formerror>
+                                <kendo-formerror class="kendo-formerror-dropdown">
                                     Chức danh không được để trống
                                 </kendo-formerror>
                             </kendo-formfield>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-sm-6">
+                    <div class="flex-container">
+                        <div>
                             <kendo-formfield>
-                                <label for="recipient-name" class="col-form-label control-label">Tên:</label>
+                                <label for="recipient-name" class="col-form-label control-label">Tên</label>
                                 <input type="text" class="form-control" formControlName="lastName" #lastName
                                     [(ngModel)]="userService.formData.lastName" required />
-                                <kendo-formerror>
+                                <kendo-formerror class="kendo-formerror-input">
                                     Tên không được để trống
                                 </kendo-formerror>
                             </kendo-formfield>
                         </div>
-                        <div class="col-sm-6">
-                            <label class="col-form-label control-label">Phòng ban:</label>
-                            <!-- <kendo-combobox [data]="listChildDepartment" #name formControlName="departmentId"
-                                    textField="name" valueField="id" [(ngModel)]="getDepartmentId" required>
-                                </kendo-combobox>
-                                <kendo-formerror>
-                                    Phòng ban không được để trống
-                                </kendo-formerror> -->
-                            <kendo-dropdowntree kendoDropDownTreeExpandable
+                        <div>
+                            <label class="col-form-label control-label">Phòng ban</label>
+                            <kendo-dropdowntree kendoDropDownTreeExpandable style="height: 39px;" [filterable]="true"
                                 [kendoDropDownTreeHierarchyBinding]="listRecursion" [textField]="['Name', 'Name']"
                                 [valueField]="['Id', 'Id']" childrenField="Children" formControlName="departmentId"
                                 #departmentId (valueChange)="valueChange($event)" [value]="value"
-                                [valueDepth]="valueDepth">
+                                (filterChange)="filterDepartmentFromDowndownTree($event)" [valueDepth]="valueDepth">
                             </kendo-dropdowntree>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="modal-footer k-form-buttons">
-                <button type="button" class="btn btn-secondary" (click)="modal.dismiss('Cross click')" (click)="clearForm()">
+            <div class="modal-footer k-form-buttons" style="margin-top: 0px;">
+                <button type="button" class="btn btn-secondary" (click)="modal.dismiss('Cross click')"
+                    (click)="clearForm()">
                     Đóng
                 </button>
                 <button type="button" class="btn btn-primary" (click)="updateUser()">
@@ -246,7 +233,7 @@
 
 <!-- Body -->
 <div class="row boxGrid">
-    <div class="col-sm-2" style="padding-top: 13px;height: auto;padding-left: 10px;">
+    <div class="col-sm-2" style="padding-top: 13px;height: fit-content;padding-left: 10px;">
         <div class="container-fluid" id="treeview">
             <br>
             <kendo-treeview kendoTreeViewExpandable [filterable]="true" size="" kendoTreeViewHierarchyBinding
@@ -255,11 +242,9 @@
             </kendo-treeview>
         </div>
     </div>
-    <div class="col-sm-10" style="height: fit-content;">
-
-
+    <div class="col-sm-10">
         <kendo-grid [data]="gridData" [pageable]="true" [pageSize]="state.take" [sortable]="true" [filterable]="true"
-            [height]="690" (remove)="removeUser($event)" [filter]="state.filter" (edit)="editUser($event)"
+            [skip]="state.skip" (remove)="removeUser($event)" [filter]="state.filter" (edit)="editUser($event)"
             (dataStateChange)="dataStateChange($event)" style="width: 100%; height: 100%;margin-top: 40px;">
             <ng-template kendoGridToolbarTemplate>
                 <button kendoGridAddCommand [primary]="true" class="btn" (click)="clearForm()"><i

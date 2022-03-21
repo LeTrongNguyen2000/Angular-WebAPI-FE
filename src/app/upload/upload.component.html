@@ -1,7 +1,11 @@
 <div class="row" style="margin-bottom:15px;">
     <div class="col-md-3">
         <input type="file" #file placeholder="Choose file" (change)="uploadFile(file.files)" style="display:none;">
-        <button type="button" class="btn btn-success" (click)="file.click()">Tải ảnh lên</button>
+        <button style=" 
+    margin-top: 10px;
+    margin-left: 310px;
+    height: fit-content;
+    width: 150px;" type="button" class="btn btn-success" (click)="file.click()">Tải ảnh lên</button>
     </div>
     <!-- <div class="col-md-4">
         <span class="upload" *ngIf="progress > 0">
@@ -12,4 +16,3 @@
         </span>
     </div> -->
 </div>
-

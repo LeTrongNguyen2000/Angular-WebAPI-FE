@@ -37,4 +37,8 @@ export class DepartmentService {
   getDepartmentId(id: number): Observable<Department[]>{
     return this.http.get<any>(`${this.APIUrl}/GetDepartmentId?Id=${id}`);
   }
+
+  recursionToFilter(departmentName: string) {
+    return this.http.get<any>(`${this.APIUrl}/RecursionToFilter?DepartmentName=${departmentName}`);
+  }
 }

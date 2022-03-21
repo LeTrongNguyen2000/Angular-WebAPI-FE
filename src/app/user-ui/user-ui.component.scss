@@ -359,3 +359,47 @@ p {
     color:red;
     font-size: 20px;
   }
+  .flex-container {
+    display: flex;
+    flex-wrap: nowrap;
+    background-color: white;
+  }
+  
+  .flex-container > div {
+    background-color: white;
+    width: 300px;
+    margin-top: -20px;
+    margin-bottom: 30px;
+    margin-left: 10px;
+    margin-right: 10px;
+    text-align: center;
+    line-height: 75px;
+    font-size: 30px;
+  }
+  label {
+    font-size: 15px;
+    float: left;
+  }
+  kendo-combobox {
+    width: 218.33px;
+    margin-top: -45px;
+    height: 36px;
+    margin-left: -15px;
+    border-width: medium
+  }
+
+  kendo-dropdowntree {
+    width: 218.33px;
+    margin-top: -43px;
+    height: 36px;
+    margin-left: -15px;
+  }
+  
+  .kendo-formerror-dropdown {
+    margin-top: -60px;
+    margin-bottom: -30px;
+  }
+  .kendo-formerror-input {
+    margin-top: -20px;
+    margin-bottom: -30px;
+  }
