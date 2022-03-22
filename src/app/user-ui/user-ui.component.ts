@@ -226,16 +226,25 @@ export class UserUIComponent implements OnInit {
   removeUser(selectedRecord: any) {
     const t = this;
     if (confirm('Ban co muon xoa record nay?')) {
-      this.userService.deleteUser(selectedRecord.dataItem.id).subscribe((res) => {
+      t.userService.deleteUser(selectedRecord.dataItem.id).subscribe((res) => {
         alert("Xóa thành công");
+        if((t.listUser.length - 1) % 5 == 0)
+        {
+          t.state.skip = t.state.skip! - 5;
+          console.log("CHECK PAGE", t.state.skip);
+          t.listUser = t.listUser.filter(
+            function (o: any) {
+              return o.id !== selectedRecord.dataItem.id
+            });
+          t.gridData = process(t.listUser, t.state);
+          console.log("CHECK ListUser after remove", t.gridData);
+        }
         t.listUser = t.listUser.filter(
           function (o: any) {
             return o.id !== selectedRecord.dataItem.id
-          })
-        if (this.state.take == 0) {
-          //this.state.skip = 0;
-        }
-        t.gridData = process(this.listUser, this.state);
+          });
+        t.gridData = process(t.listUser, t.state);
+        console.log("CHECK ListUser after remove", t.gridData);
       });
     }
   }

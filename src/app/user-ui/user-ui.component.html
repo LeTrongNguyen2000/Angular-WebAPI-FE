@@ -82,10 +82,9 @@
                             <kendo-formfield>
                                 <label class="col-form-label control-label">Phòng ban</label>
                                 <kendo-dropdowntree kendoDropDownTreeExpandable [filterable]="true"
-                                    [kendoDropDownTreeHierarchyBinding]="listRecursion" [textField]="['Name', 'Name']"
+                                    [kendoDropDownTreeHierarchyBinding]="listRecursion" [textField]="['Name', 'Name', 'Name']"
                                     [valueField]="['Id', 'Id']" childrenField="Children" formControlName="departmentId"
-                                    #name (valueChange)="valueChange($event)"
-                                    (filterChange)="filterDepartmentFromDowndownTree($event)" required>
+                                    #name (valueChange)="valueChange($event)" required>
                                 </kendo-dropdowntree>
                                 <kendo-formerror class="kendo-formerror-dropdown">
                                     Phòng ban không được để trống
@@ -187,10 +186,10 @@
                         <div>
                             <label class="col-form-label control-label">Phòng ban</label>
                             <kendo-dropdowntree kendoDropDownTreeExpandable style="height: 39px;" [filterable]="true"
-                                [kendoDropDownTreeHierarchyBinding]="listRecursion" [textField]="['Name', 'Name']"
+                                [kendoDropDownTreeHierarchyBinding]="listRecursion" [textField]="['Name', 'Name', 'Name']"
                                 [valueField]="['Id', 'Id']" childrenField="Children" formControlName="departmentId"
-                                #departmentId (valueChange)="valueChange($event)" [value]="value"
-                                (filterChange)="filterDepartmentFromDowndownTree($event)" [valueDepth]="valueDepth">
+                                #departmentId (valueChange)="valueChange($event)" 
+                                [value]="value" [valueDepth]="valueDepth">
                             </kendo-dropdowntree>
                         </div>
                         <div>
