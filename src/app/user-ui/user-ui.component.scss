@@ -381,18 +381,18 @@ p {
     float: left;
   }
   kendo-combobox {
-    width: 218.33px;
+    width: 235.33px;
     margin-top: -45px;
-    height: 36px;
-    margin-left: -15px;
+    height: 34px;
+    margin-left: -1px;
     border-width: medium
   }
 
   kendo-dropdowntree {
-    width: 218.33px;
+    width: 235.33px;
     margin-top: -43px;
-    height: 36px;
-    margin-left: -15px;
+    height: 34px;
+    margin-left: -1px;
   }
   
   .kendo-formerror-dropdown {
@@ -402,4 +402,7 @@ p {
   .kendo-formerror-input {
     margin-top: -20px;
     margin-bottom: -30px;
+  }
+  input {
+      height: 34px;
   }
